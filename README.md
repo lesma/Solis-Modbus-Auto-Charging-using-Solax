@@ -1,8 +1,6 @@
 # Solis-Modbus-Auto-Charging-using-Solax
 
-Code to transfer into your existing HA installation to support Automatic Battery Charging using Solax Modbus and Solcast HA integrations.
-
-This code brings together a [hardware integration](https://github.com/Jumpy07/Solis---SolisCloud-and-Home-Assistant) fomulated by @Jumpy07 and software by @Jevburchell to automate your solar PV battery charging.  
+Code to transfer into your existing HA installation to facilitate Automatic Battery Charging using Solax Modbus and Solcast HA integrations.
 
 A video on the theory involved in Automatic Battery Charging based on Solar Forecasting can be found [here](https://youtu.be/fF0odNXTx48)
 
