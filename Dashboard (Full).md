@@ -37,19 +37,58 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
 
 ## Dashboard (Full) Code
 ```
-  - theme: minimalist-mobile
-    title: Fulldash
-    path: fulldash
+title: Casa Del Auto Charge
+views:
+  - theme: Mushroom
+    title: Solar New
+    path: solar_new
     icon: mdi:white-balance-sunny
+    type: custom:horizontal-layout
     badges: []
     cards:
       - square: false
         columns: 1
         type: grid
-        title: Battery
         cards:
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_battery_soc
+                icon_type: none
+                name: SoC
+                layout: vertical
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-green));
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_battery_charge_today
+                icon_type: none
+                name: Charged
+                layout: vertical
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(105, 205, 162);
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_battery_discharge_today
+                icon_type: none
+                layout: vertical
+                name: Discharged
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(248, 71, 149);
+            columns: 3
           - type: custom:apexcharts-card
+            apex_config:
+              legend:
+                show: false
             graph_span: 24h
+            update_interval: 2min
+            show:
+              last_updated: true
             yaxis:
               - id: first
                 min: 10
@@ -59,186 +98,106 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
                   tickAmount: 6
               - id: second
                 min: 0
-                max: 12
+                max: 9
                 decimals: 1
                 opposite: true
                 apex_config:
                   tickAmount: 6
             chart_type: line
+            all_series_config:
+              group_by:
+                duration: 2min
+                func: avg
             span:
               start: day
             header:
               show: true
-              show_states: true
-              colorize_states: true
+              title: Battery
             experimental:
               color_threshold: true
             series:
               - entity: sensor.solax_battery_soc
                 yaxis_id: first
                 name: SoC
-                color: yellow
-                stroke_width: 1
+                color_threshold:
+                  - value: 100
+                    color: green
+                  - value: 40
+                    color: yellow
+                  - value: 30
+                    color: orange
+                  - value: 20
+                    color: red
+                stroke_width: 2
                 extend_to: now
               - entity: sensor.solax_battery_charge_today
                 yaxis_id: second
                 name: Charged
-                color: green
+                color: rgb(105, 205, 162)
                 stroke_width: 1
                 extend_to: now
               - entity: sensor.solax_battery_discharge_today
                 yaxis_id: second
                 name: Discharged
-                color: blue
+                color: rgb(248, 71, 149)
                 stroke_width: 1
                 extend_to: now
-          - square: false
-            type: grid
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: input_button.reset_consumption_defaults
-                name: Restore Defaults
-                show_state: false
-                icon_height: 20px
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: input_boolean.flux_discharge
-                icon_height: 20px
-                name: Flux Discharge
-                show_state: true
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: automation.battery_charge_automation
-                show_state: true
-                icon: mdi:battery-charging-40
-                icon_height: 20px
-                name: Auto Charge
-              - show_name: true
-                show_icon: true
-                type: button
-                entity: automation.solar_update_times
-                icon_height: 20px
-                name: Update Times
-                show_state: false
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.solar_update_times
-                  data:
-                    skip_condition: false
-                icon: mdi:clock-time-eight-outline
-            columns: 4
-          - square: false
-            type: grid
-            cards:
-              - type: custom:mushroom-number-card
-                entity: input_number.expected_consumption
-                fill_container: false
-                icon_type: none
-                name: Usage Today
-                display_mode: buttons
-                secondary_info: none
-              - type: custom:mushroom-number-card
-                entity: input_number.expected_consumption_tomorrow
-                name: Usage Tomorrow
-                icon_type: none
-                fill_container: false
-                display_mode: buttons
-                secondary_info: none
-              - type: custom:mushroom-number-card
-                entity: input_number.target_usable_soc
-                display_mode: buttons
-                icon_type: none
-                fill_container: false
-                name: Target SoC
-                primary_info: name
-                secondary_info: none
-            columns: 3
-          - square: false
-            type: grid
-            cards:
-              - show_name: true
-                show_icon: false
-                show_state: true
-                type: glance
-                entities:
-                  - entity: sensor.solcast_forecast_remaining_today
-                    name: Solcast Rem Today
-                  - entity: sensor.solcast_forecast_tomorrow
-                    name: Solcast Tomorrow
-                  - entity: sensor.soc_usable_kwh
-                    name: Usable SoC Now
-                  - entity: sensor.remaining_consumption_today
-                    name: Usage Left Today
-                  - entity: sensor.soc_required_charge
-                    name: Auto Charge
-                  - entity: sensor.battery_charge_power
-                    name: Charge Power
-                  - entity: sensor.soc_charge_time_hhmm
-                    name: Total Charge Time
-                  - entity: sensor.charge_start_time
-                    name: Charge Start
-                  - entity: sensor.soc_charge_end_time_hhmm
-                    name: Charge End
-                columns: 3
-            columns: 1
-          - square: false
-            type: grid
-            cards:
-              - type: custom:mushroom-number-card
-                entity: input_number.boost_charge
-                icon_type: none
-                layout: horizontal
-                display_mode: buttons
-              - type: custom:mushroom-number-card
-                entity: input_number.base_load
-                layout: horizontal
-                fill_container: false
-                icon_type: none
-                display_mode: slider
-                name: Base Load
-              - type: custom:mushroom-number-card
-                entity: number.solax_timed_charge_current
-                icon_type: none
-                name: Charge Current
-                fill_container: false
-                layout: horizontal
-              - type: custom:mushroom-number-card
-                entity: input_number.offpeak_window
-                display_mode: buttons
-                icon_type: none
-                layout: horizontal
-                name: Offpk Window
-            columns: 2
-          - type: entities
-            entities:
-              - entity: sensor.auto_charge_scheduled
-                name: Auto Charge Status
-              - entity: sensor.soc_at_start_of_offpeak_tonight
-                name: SoC at Start of Offpeak Tonight (2am)
-              - entity: sensor.soc_at_end_of_offpeak_tonight_with_charge
-                name: Soc at End of Offpeak Tonight (5am)
-              - entity: sensor.soc_at_start_of_offpeak_tomorrow_display
-                name: Soc at Start of Offpeak Tomorrow (2am +1)
-            show_header_toggle: true
       - square: false
         columns: 1
         type: grid
-        title: Inverter
         cards:
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_house_load
+                layout: vertical
+                name: Load
+                icon_color: white
+                icon_type: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-white));
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_house_load_today
+                name: Usage
+                layout: vertical
+                icon_color: orange
+                icon_type: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-orange));
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_grid_import_today
+                layout: vertical
+                icon_color: green
+                name: Import
+                icon_type: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-red));
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_grid_export_today
+                name: Export
+                layout: vertical
+                icon_color: red
+                icon_type: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-green));
+            columns: 4
           - type: custom:apexcharts-card
+            apex_config:
+              legend:
+                show: false
             graph_span: 24h
+            update_interval: 1min
+            show:
+              last_updated: true
             span:
               start: day
             yaxis:
@@ -255,11 +214,14 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
                 opposite: true
                 apex_config:
                   tickAmount: 5
+            all_series_config:
+              group_by:
+                duration: 30sec
+                func: avg
             chart_type: line
             header:
               show: true
-              show_states: true
-              colorize_states: true
+              title: Inverter
             series:
               - entity: sensor.solax_house_load
                 yaxis_id: first
@@ -289,14 +251,15 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
             type: grid
             cards:
               - type: gauge
+                name: Import/Export
+                min: -4000
+                max: 4000
                 needle: true
                 severity:
-                  green: 12
-                  yellow: 6
-                  red: 0
-                entity: sensor.solax_power_generation_today
-                name: Today’s Yield
-                max: 40
+                  green: 0
+                  yellow: 4000
+                  red: -4000
+                entity: sensor.solax_meter_active_power
               - type: gauge
                 entity: sensor.solax_battery_input_energy
                 name: Batt Charge
@@ -313,146 +276,247 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
                 min: 0
                 max: 4000
                 needle: false
-              - type: gauge
-                name: Import/Export
-                min: -4000
-                max: 4000
-                needle: true
-                severity:
-                  green: 0
-                  yellow: 4000
-                  red: -4000
-                entity: sensor.solax_meter_active_power
-              - type: gauge
-                entity: sensor.solax_inverter_temperature
-                severity:
-                  green: 0
-                  yellow: 50
-                  red: 80
-                name: Inverter Temp
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: switch.tapo_1
-                show_state: true
-                name: Cooling Fans
-                icon: mdi:fan
-                icon_height: 30px
             columns: 3
-          - show_name: true
-            show_icon: false
-            show_state: true
-            type: glance
-            entities:
-              - entity: sensor.solcast_forecast_d3
-                name: Solcast Day 3
-              - entity: sensor.solcast_forecast_d4
-                name: Solcast Day 4
-              - entity: sensor.solcast_forecast_d5
-                name: Solcast Day 5
-              - entity: sensor.solcast_forecast_d6
-                name: Solcast Day 6
-              - entity: sensor.solcast_api_last_polled
-                name: API Polled
-              - entity: sensor.solcast_api_used
-                name: API Used
-              - entity: number.solax_timed_discharge_start_hours
-                name: Flux disch Start
-              - entity: number.solax_timed_discharge_end_hours
-                name: Flux disch End
-            columns: 4
-          - square: false
-            type: grid
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: switch.kasa_smart_plug_1
-                icon_height: 20px
-                name: Battery Heat
-                show_state: true
-                icon: mdi:home-battery
-              - type: custom:mushroom-entity-card
-                entity: sensor.openweathermap_temperature
-                icon_type: none
-                name: OAT
-                layout: vertical
-                fill_container: true
-              - type: custom:mushroom-entity-card
-                entity: sensor.solax_bms_battery_charge_limit
-                icon_type: none
-                name: Chrg Limit
-                fill_container: true
-                layout: vertical
-              - type: custom:mushroom-entity-card
-                entity: sensor.solax_bms_battery_discharge_limit
-                name: Disch Limit
-                icon_type: none
-                fill_container: true
-                layout: vertical
-            columns: 4
-          - square: false
-            type: grid
-            cards:
-              - type: custom:mushroom-number-card
-                entity: input_number.battery_capacity
-                display_mode: buttons
-                fill_container: false
-                icon_type: none
-              - type: custom:mushroom-number-card
-                entity: input_number.overdischarge_soc
-                display_mode: buttons
-                icon_type: none
-                name: Overdischarge SoC
-              - type: custom:mushroom-number-card
-                entity: input_number.force_charge_soc
-                display_mode: buttons
-                icon_type: none
-                name: Forcecharge SoC
-            columns: 3
-          - type: entities
-            entities:
-              - entity: sensor.soc_total_usable
-                name: Useful System Capacity
-              - entity: sensor.soc_usableforcecharge
-                name: System Capacity Above Forcecharge
-              - entity: sensor.calculated_charge_current
-                name: Calculated Charge Current
       - square: false
         columns: 1
         type: grid
-        title: Panels
         cards:
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_power_generation_today
+                name: Yield
+                icon_type: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: sensor.solax_pv_total_power
+                icon_type: none
+                layout: vertical
+                name: Output
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-yellow));
+              - type: custom:mushroom-entity-card
+                entity: sensor.string_1_output
+                name: String 1
+                layout: vertical
+                icon_type: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-cyan));
+              - type: custom:mushroom-entity-card
+                entity: sensor.string_2_output
+                icon_type: none
+                layout: vertical
+                name: String 2
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(255, 0, 255);
+            columns: 4
           - type: custom:apexcharts-card
-            graph_span: 21h
+            apex_config:
+              legend:
+                show: false
+            update_interval: 2min
+            show:
+              last_updated: true
+            graph_span: 18h
             span:
               start: day
-              offset: +3h
+              offset: +4h
+            yaxis:
+              - id: first
+                min: 0
+                decimals: 0
+                apex_config:
+                  tickAmount: 4
+              - id: second
+                min: 0
+                max: 40
+                decimals: 0
+                opposite: true
+                apex_config:
+                  tickAmount: 4
+            all_series_config:
+              group_by:
+                duration: 2min
+                func: avg
             chart_type: line
             header:
               show: true
-              show_states: true
-              colorize_states: true
+              title: Panels
             series:
               - entity: sensor.solax_pv_total_power
+                yaxis_id: first
                 name: Combined Output
                 stroke_width: 1
                 color: yellow
                 extend_to: now
               - entity: sensor.string_1_output
+                yaxis_id: first
                 name: String 1
                 stroke_width: 1
                 color: cyan
                 extend_to: now
               - entity: sensor.string_2_output
+                yaxis_id: first
                 name: String 2
                 stroke_width: 1
                 color: magenta
                 extend_to: now
+              - entity: sensor.solax_power_generation_today
+                yaxis_id: second
+                name: Today Yield
+                stroke_width: 1
+                color: white
+                extend_to: now
+      - square: false
+        columns: 1
+        type: grid
+        cards:
+          - square: false
+            type: grid
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_button.reset_consumption_defaults
+                name: Restore Defaults
+                show_state: false
+                icon_height: 20px
+                icon: mdi:counter
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_boolean.flux_discharge
+                icon_height: 20px
+                name: Flux Discharge
+                show_state: true
+                icon: mdi:jellyfish
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.solar_battery_charge_automation
+                show_state: true
+                icon: mdi:battery-charging-40
+                icon_height: 20px
+                name: Auto Charge
+              - show_name: true
+                show_icon: true
+                type: button
+                entity: automation.solar_update_times
+                icon_height: 20px
+                name: Update Times
+                show_state: false
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.solar_update_times
+                  data:
+                    skip_condition: false
+                icon: mdi:clock-time-eight-outline
+            columns: 4
+          - show_name: true
+            show_icon: false
+            show_state: true
+            type: glance
+            entities:
+              - entity: sensor.solcast_pv_forecast_forecast_remaining_today
+                name: Today
+              - entity: sensor.solcast_pv_forecast_forecast_tomorrow
+                name: Tomorrow
+              - entity: sensor.solcast_pv_forecast_forecast_day_3
+                name: Day 3
+              - entity: sensor.solcast_pv_forecast_forecast_day_4
+                name: Day 4
+              - entity: sensor.solcast_pv_forecast_forecast_day_5
+                name: Day 5
+            columns: 5
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-number-card
+                entity: input_number.expected_consumption
+                fill_container: false
+                icon_type: none
+                name: Usage Today
+                display_mode: buttons
+                secondary_info: none
+              - type: custom:mushroom-number-card
+                entity: input_number.expected_consumption_tomorrow
+                name: Usage Tomorrow
+                icon_type: none
+                fill_container: false
+                display_mode: buttons
+                secondary_info: none
+              - type: custom:mushroom-number-card
+                entity: input_number.target_usable_soc
+                display_mode: buttons
+                icon_type: none
+                fill_container: false
+                name: Target SoC
+                primary_info: name
+                secondary_info: none
+            columns: 3
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-number-card
+                entity: input_number.boost_charge
+                icon_type: none
+                layout: horizontal
+                display_mode: buttons
+              - type: custom:mushroom-number-card
+                entity: number.solax_timed_charge_current
+                icon_type: none
+                name: Charge Current
+                fill_container: false
+                layout: horizontal
+            columns: 2
+          - square: false
+            type: grid
+            cards:
+              - show_name: true
+                show_icon: false
+                show_state: true
+                type: glance
+                entities:
+                  - entity: sensor.soc_usable_kwh
+                    name: Usable SoC
+                  - entity: sensor.remaining_consumption_today
+                    name: Usage Left Today
+                  - entity: sensor.soc_required_charge
+                    name: Auto Charge
+                  - entity: sensor.soc_charge_time_hhmm
+                    name: Charge Time
+                  - entity: sensor.charge_start_time
+                    name: Charge Start
+                  - entity: sensor.soc_charge_end_time_hhmm
+                    name: Charge End
+                columns: 3
+            columns: 1
+          - type: entities
+            entities:
+              - entity: sensor.auto_charge_scheduled
+                name: Auto Charge Status
+              - entity: sensor.soc_at_start_of_offpeak_tonight
+                name: SoC at Start of Offpeak Tonight
+              - entity: sensor.soc_at_end_of_offpeak_tonight_with_charge
+                name: Soc at End of Offpeak Tonight
+              - entity: sensor.soc_at_start_of_offpeak_tomorrow_display
+                name: Soc at Start of Offpeak Tomorrow
+            show_header_toggle: true
       - square: false
         type: grid
         cards:
@@ -461,6 +525,7 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
             type: weather-forecast
             entity: weather.openweathermap
             name: Home
+            forecast_type: hourly
           - type: custom:hourly-weather
             entity: weather.openweathermap
             num_segments: '10'
@@ -475,4 +540,156 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
               dusk: true
               noon: true
         columns: 1
+      - square: false
+        columns: 1
+        type: grid
+        cards:
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-number-card
+                entity: input_number.battery_capacity
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.overdischarge_soc
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.force_charge_soc
+                icon_type: none
+                layout: vertical
+              - type: custom:mushroom-number-card
+                entity: input_number.offpeak_window
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.base_load
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: number.solax_timed_discharge_current
+                icon_type: none
+                layout: vertical
+                name: Timed Discharge Current
+            columns: 2
+          - type: entities
+            entities:
+              - entity: sensor.soc_total_usable
+                name: Useful System Capacity
+              - entity: sensor.soc_usableforcecharge
+                name: System Capacity Above Forcecharge
+              - entity: sensor.calculated_charge_current
+                name: Calculated Charge Current
+              - entity: sensor.battery_charge_power
+                name: Set Charge Power
+          - show_name: true
+            show_icon: false
+            show_state: true
+            type: glance
+            entities:
+              - entity: sensor.peak_import_cost
+                name: peak in
+              - entity: sensor.offpeak_import_cost
+                name: offpeak in
+              - entity: sensor.flux_import_cost
+                name: flux in
+              - entity: sensor.daily_elec_import_cost
+                name: import total
+              - entity: sensor.peak_export_profit
+                name: peak out
+              - entity: sensor.offpeak_export_profit
+                name: offpeak out
+              - entity: sensor.flux_export_profit
+                name: flux out
+              - entity: sensor.daily_elec_export_profit
+                name: export total
+            columns: 4
+  - theme: Backend-selected
+    title: Solis Data
+    path: solis-data
+    subview: false
+    icon: mdi:solar-power-variant
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.soc_usable_kwh
+          - entity: sensor.soc_required_charge
+          - entity: input_number.expected_consumption
+          - entity: input_number.target_usable_soc
+          - entity: sensor.soc_charge_time_decimal
+          - entity: sensor.soc_charge_time_hhmm
+          - entity: sensor.soc_charge_end_time_decimal
+          - entity: sensor.soc_charge_end_time_hhmm
+          - entity: sensor.soc_charge_end_time_hour
+          - entity: sensor.soc_charge_end_time_minute
+          - entity: sensor.charge_start_time
+          - entity: number.solax_timed_charge_start_hours
+          - entity: number.solax_timed_charge_start_minutes
+          - entity: number.solax_timed_charge_end_hours
+          - entity: number.solax_timed_charge_end_minutes
+          - entity: number.solax_timed_charge_current
+          - entity: button.solax_update_charge_discharge_times
+          - entity: number.solax_timed_discharge_start_hours
+          - entity: number.solax_timed_discharge_start_minutes
+          - entity: number.solax_timed_discharge_end_hours
+          - entity: number.solax_timed_discharge_end_minutes
+          - entity: number.solax_timed_discharge_current
+      - type: entities
+        entities:
+          - entity: sensor.solax_house_load_total
+            name: Consumption total
+          - entity: sensor.solax_meter_grid_export_total
+            name: Export total
+          - entity: sensor.solax_meter_grid_import_total
+            name: Import total
+          - entity: sensor.solax_power_generation_total
+            name: Generation total
+          - entity: sensor.solax_total_battery_charge
+            name: Total battery charge
+          - entity: sensor.solax_total_battery_discharge
+            name: Total battery discharge
+      - type: entities
+        entities:
+          - entity: input_number.octopus_energy_import_standing_charge
+            name: Import Standing Charge
+          - entity: select.octopus_flux_export_tariff
+          - entity: sensor.octopus_flux_export_tariff_flux
+          - entity: input_number.octopus_energy_export_flux
+            name: Flux Export Rate
+          - entity: sensor.octopus_flux_export_tariff_offpeak
+          - entity: input_number.octopus_energy_export_offpeak
+            name: Offpeak Export Rate
+          - entity: sensor.octopus_flux_export_tariff_peak
+          - entity: input_number.octopus_energy_export_peak
+            name: Peak Export Rate
+          - entity: select.octopus_flux_tariff
+          - entity: sensor.octopus_flux_tariff_flux
+          - entity: input_number.octopus_energy_import_flux
+            name: Flux Import Rate
+          - entity: sensor.octopus_flux_tariff_offpeak
+          - entity: input_number.octopus_energy_import_offpeak
+            name: Offpeak Import Rate
+          - entity: sensor.octopus_flux_tariff_peak
+          - entity: input_number.octopus_energy_import_peak
+            name: Peak Import Rate
+  - theme: Backend-selected
+    title: System Monitor
+    path: system-monitor
+    icon: mdi:desktop-classic
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - sensor.disk_free
+          - sensor.disk_use_percent
+          - sensor.last_boot
+          - sensor.memory_use_percent
+          - sensor.network_in_eth0
+          - sensor.network_out_eth0
+          - sensor.network_throughput_in_eth0
+          - sensor.network_throughput_out_eth0
+          - sensor.processor_temperature
+          - sensor.processor_use
 ```
