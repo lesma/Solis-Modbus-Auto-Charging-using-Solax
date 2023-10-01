@@ -1,6 +1,6 @@
 This is the Full version of the Automated Charging Dashboard.
 
-<img src="Images/HA Full Dashboard.png">
+<img src="Images/Full Dashboard V3.1.png">
 
 # Installation
 
