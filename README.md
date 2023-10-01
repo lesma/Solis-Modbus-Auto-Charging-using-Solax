@@ -14,7 +14,7 @@ Required HA integrations for this to work are [Solax Modbus](https://github.com/
 
 Here is what the [Full Dashboard](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Full%20Dashboard%20V3.1.md) looks like:
 
-<img src="Images/HA Full Dashboard.png">
+<img src="Images/Full Dashboard V3.1.png">
 
 ## Minimalist Dashboard
 
