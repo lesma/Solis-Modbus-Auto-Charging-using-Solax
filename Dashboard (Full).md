@@ -20,7 +20,7 @@ Paste the following directly into your HA overview.
 	* [Mushroom Themes](http://homeassistant.local:8123/hacs/repository/456201687)
 	* [Mushroom](http://homeassistant.local:8123/hacs/repository/444350375)
 	* [Hourly Weather Card](http://homeassistant.local:8123/hacs/repository/499270202)
-        * [Layout Card](https://github.com/thomasloven/lovelace-layout-card)
+* [Layout Card](http://homeassistant.local:8123/hacs/repository/156434866)
 
 6. You must have "Solcast PV Solar" and "Solax Modbus" HACS Integrations installed and configured to your own system
 	* [Solcast](https://github.com/oziee/ha-solcast-solar) 
