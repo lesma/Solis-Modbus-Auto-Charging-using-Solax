@@ -14,7 +14,7 @@ Required HA integrations for this to work are [Solax Modbus](https://github.com/
 
 Here is what the [Full Dashboard](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Dashboard%20(Full).md) looks like:
 
-<img src="Images/Full Dashboard V3.1.png">
+<img src="Images/Full Dashboard.png">
 
 ## Home Assistant Backup Restore
 
