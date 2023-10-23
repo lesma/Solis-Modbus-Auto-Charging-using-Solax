@@ -56,13 +56,17 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 
 * Solcast Data - Very simply gives you a representation of the expected output of your system for the next 5 days.  Note that today is the remainder of the yield for today - so after dusk it reads zero.
 -----
-<img src="Images/Main Controls 2.png" width="500">
+<img src="Images/Main Control Selectors.png" width="500">
 
 * Usage Today (Input Number) - Allows you to alter your expected consumption for today.  This is fed into the algorithm to calculate charge.  An [automation](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---expected-consumption-low-state-tracker) also notices if your actual consumption exceeds this number, and increases it to follow in real time.  Also at 23:55, when the ["Solar - Battery Charge Automation"](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---battery-charge-automation) runs, it automatically syncs the two to ensure no anomailies in the charge calculation.
 
 * Usage Tomorrow (Input Number) - Allows you to alter your expected consumption for tomorrow.  This is fed into the algorithm to calculate charge. 
 
-* Target SoC (Input Number) - Allows you to set your Target SoC (in kWh) that your battery will have at the start of the Offpeak period not tomorrow, but the next day. This is fed into the algorithm to calculate charge. 
+* Target SoC (Input Number) - Allows you to set your Target SoC (in kWh) that your battery will have at the start of the Offpeak period not tomorrow, but the next day. This is fed into the algorithm to calculate charge.
+
+* Boost Charge (Input Number) - No matter what auto charge or manual charge you have set, boost charge simply adds an amount on to it.  So if auto charge calculates it wants to add 3kWh and you want 4, then add 1 kWh of charge from the Boost Charge control.  Easy.
+
+* Base Load (Input Number) - The amount of base load / background load your house uses.  Think when you're all asleep and everything is on standby.  Might seem frivolous, but it's an important part of calculating charge as accurately as possible.
 -----
 <img src="Images/Main Controls 3.png" width="500">
 
@@ -86,9 +90,7 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 -----
 <img src="Images/Main Controls 4.png" width="500">
 
-* Boost Charge (Input Number) - No matter what auto charge or manual charge you have set, boost charge simply adds an amount on to it.  So if auto charge calculates it wants to add 3kWh and you want 4, then add 1 kWh of charge from the Boost Charge control.  Easy.
 
-* Base Load (Input Number) - The amount of base load / background load your house uses.  Think when you're all asleep and everything is on standby.  Might seem frivolous, but it's an important part of calculating charge as accurately as possible.
 
 * Charge Current (Input Number) - You can manually control this, but it is set automatically by Battery Config section below.  It directly controls the rate at which your batteries will charge.
 
