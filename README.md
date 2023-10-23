@@ -25,7 +25,7 @@ Alternatively, for those of you who are starting fresh with Home Assistant, you 
 ## UI
 ### Solar Data
 
-<img src="Images/Gauges.png">
+<img src="Images/Graphs.png">
 
 Split into three sections in the dashboard is your live solar data, taken directly from your inverter using your Modbus interface and polled into Home Assistant at whatever rate you set using the Solax Integration.  I find 30 seconds works well and displays nicely in the graphs without using up too much disk space on my instance, and is not too processor-intensive.  Colours can be chosen to suit your needs easily.  Graphs are drawn using Apex Charts.
 
