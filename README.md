@@ -68,8 +68,6 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 
 * Base Load (Input Number) - The amount of base load / background load your house uses.  Think when you're all asleep and everything is on standby.  Might seem frivolous, but it's an important part of calculating charge as accurately as possible.
 -----
-
------
 ### Auto Charge Status
 
 <img src="Images/Auto Charge Calcs.png" width="500">
@@ -94,33 +92,16 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 
 * Charge End (Template Sensor) - The charge start time + the total charge time = the charge end time.
 -----
-### Inverter Stats & Future Solcast Data
+### Import/Export, Charge/Discharge & Electricity Cost
 
-<img src="Images/Inverter Stats 1.png" width="500">
+<img src="Images/Gauges and Costs.png" width="500">
 
 * Gauges to show live inverter stats:
-  * Today's Yield (kWh)
+  * Import Export Power (W)
   * Battery Charge Power (W)
   * Battery Discharge Power (W)
-  * Import Export Power (W)
-  * Inverter Temperature (C)
 
-* Cooling Fans Button - Note that this will be unconfigured when you import this code into your system.  You will need to set this up to control your fans (or delete if you don't have any)
-
------
-
-<img src="Images/Inverter Stats 2.png" width="500">
-
-* Solcast Day 3/4/5/6 (Template Sensors) - Forecast data for days 3 - 6 in the future.  
-
-* API Polled (Sensor) - Shows the last time the Solcast servers were polled for data.
-
-* API Used (Sensor) - Number of API calls that you have made to the Solcast servers today.
-
-* Flux Discharge Start (Number) - The time in 24h format when the Flux Battery Discharge is set to begin.
-
-* Flux Discharge End (Number) - The time in 24h format when the Flux Battery Discharge is set to finish.  This is controlled by two [automations](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#flux---discharge-on) which alter the end time from 16:00 to 19:00.
-
+* Running Totals showing your import & export electricity costs for today.  These assume you are on Octopus Flux, but could be reconfigured for any tariff using the "Utility Meter" facility in HA.  
 -----
 ### Battery Config
 
@@ -144,17 +125,6 @@ As an example, with my 10kWh battery and a Force Charge SoC set at 10%, the maxi
 
 * Calculated Charge Current (Template Sensor) - using the above variables, a charge current is calculated and displayed here.  An [automation](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---charge-current-settings) "Solar - Charge Current Settings" also runs in the background so that this figure is updated and sent to the inverter in real-time whenever any of the Battery Config settings are altered.
 
------
-
-<img src="Images/Inverter Stats 3.png" width="500">
-
-* Battery Heat Button - Note that this will be unconfigured when you import this code into your system.  You will need to set this up to control your battery heater (or delete if you don't have one).
-
-* OAT (Sensor) - Outside Air Temperature (useful for automating battery heat if you don't have a temperature sensor on the batteries themselves).
-
-* Chrg Limit (Sensor) - Battery Charge Limit from your BMS via Solax.
-
-* Disch Limit (Sensor) - Battery Discharge Limit from your BMS via Solax.
 
 -----
 
