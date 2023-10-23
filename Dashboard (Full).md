@@ -37,7 +37,7 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
 
 ## Dashboard (Full) Code
 ```
-title: Casa Del Auto Charge
+title: Casa Del AutoCharge
 views:
   - theme: Mushroom
     title: Solar New
@@ -99,7 +99,7 @@ views:
               - id: second
                 min: 0
                 max: 9
-                decimals: 1
+                decimals: 0
                 opposite: true
                 apex_config:
                   tickAmount: 6
@@ -122,9 +122,9 @@ views:
                 color_threshold:
                   - value: 100
                     color: green
-                  - value: 40
+                  - value: 50
                     color: yellow
-                  - value: 30
+                  - value: 35
                     color: orange
                   - value: 20
                     color: red
@@ -158,7 +158,7 @@ views:
                 card_mod:
                   style: |
                     ha-card {
-                      --primary-text-color: rgb(var(--rgb-white));
+                      --primary-text-color: rgb(var(--rgb-grey));
               - type: custom:mushroom-entity-card
                 entity: sensor.solax_house_load_today
                 name: Usage
@@ -210,7 +210,7 @@ views:
               - id: second
                 min: 0
                 max: 20
-                decimals: 1
+                decimals: 0
                 opposite: true
                 apex_config:
                   tickAmount: 5
@@ -227,7 +227,7 @@ views:
                 yaxis_id: first
                 name: House Load
                 stroke_width: 1
-                color: white
+                color: grey
                 extend_to: now
               - entity: sensor.solax_house_load_today
                 yaxis_id: second
@@ -289,6 +289,10 @@ views:
                 name: Yield
                 icon_type: none
                 layout: vertical
+                card_mod:
+                  style: |
+                    ha-card {
+                      --primary-text-color: rgb(var(--rgb-grey));
               - type: custom:mushroom-entity-card
                 entity: sensor.solax_pv_total_power
                 icon_type: none
@@ -372,7 +376,7 @@ views:
                 yaxis_id: second
                 name: Today Yield
                 stroke_width: 1
-                color: white
+                color: grey
                 extend_to: now
       - square: false
         columns: 1
@@ -386,11 +390,11 @@ views:
                 type: button
                 tap_action:
                   action: toggle
-                entity: input_button.reset_consumption_defaults
-                name: Restore Defaults
-                show_state: false
+                entity: automation.flux_charge
+                name: Flux Charge
+                show_state: true
                 icon_height: 20px
-                icon: mdi:counter
+                icon: mdi:jellyfish
               - show_name: true
                 show_icon: true
                 type: button
@@ -478,11 +482,10 @@ views:
                 layout: horizontal
                 display_mode: buttons
               - type: custom:mushroom-number-card
-                entity: number.solax_timed_charge_current
-                icon_type: none
-                name: Charge Current
-                fill_container: false
+                entity: input_number.base_load
                 layout: horizontal
+                icon_type: none
+                display_mode: slider
             columns: 2
           - square: false
             type: grid
@@ -518,6 +521,42 @@ views:
                 name: Soc at Start of Offpeak Tomorrow
             show_header_toggle: true
       - square: false
+        columns: 1
+        type: grid
+        cards:
+          - show_name: true
+            show_icon: false
+            show_state: true
+            type: glance
+            entities:
+              - entity: sensor.peak_import_cost
+                name: Peak In
+              - entity: sensor.offpeak_import_cost
+                name: Offpeak In
+              - entity: sensor.flux_import_cost
+                name: Flux In
+              - entity: sensor.daily_elec_import_cost
+                name: Import Total
+              - entity: sensor.peak_export_profit
+                name: Peak Out
+              - entity: sensor.offpeak_export_profit
+                name: Offpeak Out
+              - entity: sensor.flux_export_profit
+                name: Flux Out
+              - entity: sensor.daily_elec_export_profit
+                name: Export Total
+            columns: 4
+          - show_name: true
+            show_icon: false
+            show_state: true
+            type: glance
+            entities:
+              - entity: sensor.daily_import_export_cost
+                name: Today Electricity Cost
+              - entity: sensor.break_even_export_kwh
+                name: Export to Break Even
+            columns: 2
+      - square: false
         type: grid
         cards:
           - show_current: true
@@ -540,9 +579,16 @@ views:
               dusk: true
               noon: true
         columns: 1
+  - theme: Backend-selected
+    title: Solis Data
+    path: solis-data
+    subview: false
+    icon: mdi:solar-power-variant
+    badges: []
+    cards:
       - square: false
-        columns: 1
         type: grid
+        title: System Configuration
         cards:
           - square: false
             type: grid
@@ -551,6 +597,7 @@ views:
                 entity: input_number.battery_capacity
                 layout: vertical
                 icon_type: none
+                display_mode: ''
               - type: custom:mushroom-number-card
                 entity: input_number.overdischarge_soc
                 layout: vertical
@@ -564,14 +611,17 @@ views:
                 layout: vertical
                 icon_type: none
               - type: custom:mushroom-number-card
-                entity: input_number.base_load
-                layout: vertical
-                icon_type: none
-              - type: custom:mushroom-number-card
                 entity: number.solax_timed_discharge_current
                 icon_type: none
                 layout: vertical
                 name: Timed Discharge Current
+              - type: custom:mushroom-number-card
+                entity: number.solax_timed_charge_current
+                icon_type: none
+                name: Charge Current
+                fill_container: false
+                layout: vertical
+                display_mode: slider
             columns: 2
           - type: entities
             entities:
@@ -583,59 +633,61 @@ views:
                 name: Calculated Charge Current
               - entity: sensor.battery_charge_power
                 name: Set Charge Power
-          - show_name: true
-            show_icon: false
-            show_state: true
-            type: glance
-            entities:
-              - entity: sensor.peak_import_cost
-                name: peak in
-              - entity: sensor.offpeak_import_cost
-                name: offpeak in
-              - entity: sensor.flux_import_cost
-                name: flux in
-              - entity: sensor.daily_elec_import_cost
-                name: import total
-              - entity: sensor.peak_export_profit
-                name: peak out
-              - entity: sensor.offpeak_export_profit
-                name: offpeak out
-              - entity: sensor.flux_export_profit
-                name: flux out
-              - entity: sensor.daily_elec_export_profit
-                name: export total
-            columns: 4
-  - theme: Backend-selected
-    title: Solis Data
-    path: solis-data
-    subview: false
-    icon: mdi:solar-power-variant
-    badges: []
-    cards:
+        columns: 1
       - type: entities
         entities:
-          - entity: sensor.soc_usable_kwh
-          - entity: sensor.soc_required_charge
-          - entity: input_number.expected_consumption
-          - entity: input_number.target_usable_soc
-          - entity: sensor.soc_charge_time_decimal
-          - entity: sensor.soc_charge_time_hhmm
-          - entity: sensor.soc_charge_end_time_decimal
-          - entity: sensor.soc_charge_end_time_hhmm
-          - entity: sensor.soc_charge_end_time_hour
-          - entity: sensor.soc_charge_end_time_minute
-          - entity: sensor.charge_start_time
-          - entity: number.solax_timed_charge_start_hours
-          - entity: number.solax_timed_charge_start_minutes
-          - entity: number.solax_timed_charge_end_hours
-          - entity: number.solax_timed_charge_end_minutes
-          - entity: number.solax_timed_charge_current
-          - entity: button.solax_update_charge_discharge_times
-          - entity: number.solax_timed_discharge_start_hours
-          - entity: number.solax_timed_discharge_start_minutes
-          - entity: number.solax_timed_discharge_end_hours
-          - entity: number.solax_timed_discharge_end_minutes
-          - entity: number.solax_timed_discharge_current
+          - entity: input_number.octopus_energy_import_standing_charge
+            name: Import Standing Charge
+          - entity: sensor.octopus_flux_export_tariff_flux
+          - entity: input_number.octopus_energy_export_flux
+            name: Flux Export Rate
+          - entity: sensor.octopus_flux_export_tariff_offpeak
+          - entity: input_number.octopus_energy_export_offpeak
+            name: Offpeak Export Rate
+          - entity: sensor.octopus_flux_export_tariff_peak
+          - entity: input_number.octopus_energy_export_peak
+            name: Peak Export Rate
+          - entity: sensor.octopus_flux_tariff_flux
+          - entity: input_number.octopus_energy_import_flux
+            name: Flux Import Rate
+          - entity: sensor.octopus_flux_tariff_offpeak
+          - entity: input_number.octopus_energy_import_offpeak
+            name: Offpeak Import Rate
+          - entity: sensor.octopus_flux_tariff_peak
+          - entity: input_number.octopus_energy_import_peak
+            name: Peak Import Rate
+        title: Electricity Rate Definitions
+      - square: false
+        type: grid
+        cards:
+          - type: entities
+            entities:
+              - entity: number.solax_timed_charge_current
+            title: Manual Charge Time Controls
+          - type: entities
+            entities:
+              - entity: number.solax_timed_charge_start_hours
+              - entity: number.solax_timed_charge_start_minutes
+              - entity: number.solax_timed_charge_end_hours
+              - entity: number.solax_timed_charge_end_minutes
+              - entity: button.solax_update_charge_discharge_times
+          - type: entities
+            entities:
+              - entity: number.solax_timed_charge_start_hours_2
+              - entity: number.solax_timed_charge_start_minutes_2
+              - entity: number.solax_timed_charge_end_hours_2
+              - entity: number.solax_timed_charge_end_minutes_2
+              - entity: button.solax_update_charge_discharge_times_2
+            state_color: false
+          - type: entities
+            entities:
+              - entity: number.solax_timed_discharge_start_hours
+              - entity: number.solax_timed_discharge_start_minutes
+              - entity: number.solax_timed_discharge_end_hours
+              - entity: number.solax_timed_discharge_end_minutes
+              - entity: number.solax_timed_discharge_current
+              - entity: button.solax_update_charge_discharge_times
+        columns: 1
       - type: entities
         entities:
           - entity: sensor.solax_house_load_total
@@ -650,30 +702,7 @@ views:
             name: Total battery charge
           - entity: sensor.solax_total_battery_discharge
             name: Total battery discharge
-      - type: entities
-        entities:
-          - entity: input_number.octopus_energy_import_standing_charge
-            name: Import Standing Charge
-          - entity: select.octopus_flux_export_tariff
-          - entity: sensor.octopus_flux_export_tariff_flux
-          - entity: input_number.octopus_energy_export_flux
-            name: Flux Export Rate
-          - entity: sensor.octopus_flux_export_tariff_offpeak
-          - entity: input_number.octopus_energy_export_offpeak
-            name: Offpeak Export Rate
-          - entity: sensor.octopus_flux_export_tariff_peak
-          - entity: input_number.octopus_energy_export_peak
-            name: Peak Export Rate
-          - entity: select.octopus_flux_tariff
-          - entity: sensor.octopus_flux_tariff_flux
-          - entity: input_number.octopus_energy_import_flux
-            name: Flux Import Rate
-          - entity: sensor.octopus_flux_tariff_offpeak
-          - entity: input_number.octopus_energy_import_offpeak
-            name: Offpeak Import Rate
-          - entity: sensor.octopus_flux_tariff_peak
-          - entity: input_number.octopus_energy_import_peak
-            name: Peak Import Rate
+        title: Global Stats
   - theme: Backend-selected
     title: System Monitor
     path: system-monitor
