@@ -39,7 +39,7 @@ Split into three sections in the dashboard is your live solar data, taken direct
 
 This is the heart of the UI to control your Automatic Battery Charging.  The controls here are simple, yet feed data to the charge logic to make a relatively complex decision about whether to charge your batteries.  And if so, by how much.  Each control and display parameter does the following:
 
-<img src="Images/Main Controls Modes.png" width="500">
+<img src="Images/Main Control Modes.png" width="500">
 
 * Flux Charge (Button) -   At just before 3pm, this automation judges whether an amount of charge should
   be added to the batteries from the grid at Flux prices, before the expensive
@@ -51,6 +51,10 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 * Auto Charge (Button) - Very simply, this turns the [automated battery charging](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---battery-charge-automation) function on or off.  When on, you can sit back and watch it do it's thing.  When off, you can manually control the battery charging through the UI, or revert back to Solis Cloud.  Or climb into the loft.
 
 * Update Times (Button) - Sends the currently set charging times to your inverter via [an automation](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---update-times).  Only really needed if you're in manual mode or if you've changed settings and want to push them to your inverter.  The Solax integration has a button which sends all of the commanded charge times to the inverter at the same time, so a button is required to start that process.
+-----
+<img src="Images/Solcast Data.png" width="500">
+
+* Solcast Data - Very simply gives you a representation of the expected output of your system for the next 5 days.  Note that today is the remainder of the yield for today - so after dusk it reads zero.
 -----
 <img src="Images/Main Controls 2.png" width="500">
 
