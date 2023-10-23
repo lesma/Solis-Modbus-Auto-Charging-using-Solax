@@ -39,9 +39,12 @@ Split into three sections in the dashboard is your live solar data, taken direct
 
 This is the heart of the UI to control your Automatic Battery Charging.  The controls here are simple, yet feed data to the charge logic to make a relatively complex decision about whether to charge your batteries.  And if so, by how much.  Each control and display parameter does the following:
 
-<img src="Images/Main Controls 1.png" width="500">
+<img src="Images/Main Controls Modes.png" width="500">
 
-* Restore Defaults (Button) - Returns your Expected Usage Numbers, Target SoC, Boost Charge, Base Load and Charge Current to their default values - which are chosen by you in the Automation ["Solar - Restore Consumption Defaults"](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---restore-consumption-defaults).  My numbers will be different to yours, but may be a good starting point.
+* Flux Charge (Button) -   At just before 3pm, this automation judges whether an amount of charge should
+  be added to the batteries from the grid at Flux prices, before the expensive
+  import rate from 4-7pm.  From 0-30%, 3kWh is added.  From 31-40%, 2kWh is
+  added.  From 41-50%, 1kWh is added.  Above 50%, no charge is added.  This can be found in the Automation ["Flux - Charge"](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#flux---charge).
 
 * Flux Discharge (Button) - This is for us Octopus Flux customers who may want to discharge the battery to the grid between 16:00 and 19:00 on the peak rate.  This boolean control sets an [automation to set](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#flux---discharge-on) those times, or to [cancel those times](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#flux---discharge-off).  Another Automation also [cuts off the discharge](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#flux---discharge-cutout) if battery SoC drops below 50% during the Flux discharge - edit or delete this if you wish.
 
