@@ -25,7 +25,7 @@ After Installation please read the [User Guide](https://github.com/jevburchell/S
 
 -----
 
-## .tar File
+# .tar File
 
 To download, right-click and choose "save link as"
 
