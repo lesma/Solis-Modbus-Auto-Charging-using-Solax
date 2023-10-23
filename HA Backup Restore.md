@@ -11,7 +11,6 @@ If you are installing HA for the very first time and are on the onboarding scree
 * Solcast API Key
 * Openweathermap API Key
 * Solax Integration settings (you must enter the correct IP address of your Modbus device which connects to your inverter)
-* Battery Heat and Cooling Fans buttons will need to be linked to your own devices, if you have them.
 
 HA Credentials:
 
