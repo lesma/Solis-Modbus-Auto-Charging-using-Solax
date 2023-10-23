@@ -68,38 +68,11 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 
 * Base Load (Input Number) - The amount of base load / background load your house uses.  Think when you're all asleep and everything is on standby.  Might seem frivolous, but it's an important part of calculating charge as accurately as possible.
 -----
-<img src="Images/Main Controls 3.png" width="500">
-
-* Solcast Rem Today (Sensor) - The remaining expected output of your solar system for the remainder of today.
-
-* Solcast Tomorrow (Sensor) - Solcast Forecast for Tomorrow.
-
-* Usable SoC Now (Template Sensor) - How much charge is left in your battery in kWh.  This is calculated by taking the full capacity of your battery and subtracting your Overdischarge Soc; that leaves the useful amount of capacity before your battery goes into trickle discharge.  The *remainder* of this amount is your 'Usable SoC Now'.
-
-* Usage Left Today (Template Sensor) - Your Usage Today minus your actual Daily House Load.  Essentially how many kWh you have left to burn before midnight.
-
-* Auto Charge (Template Sensor) - Shows the calculated amount of Automatic Battery Charging that the system is planning on adding.  Changes dynamically as input numbers and sensors feed variable data into the algorithm.
-
-* Charge Power (Template Sensor) - The calculated Wattage that the algorithm uses to charge your batteries.  This is worked out using the Battry Config section below, and/or manually controlled using the "Charge Current" Input Number below.  Calculated at 55v - you may alter this in configuration.yaml if you wish.
-
-* Total Charge Time (Template Sensor) - Calculated amount of charge time.  Shows Auto charge time in Auto mode or your own configured charge time in Manual mode.
-
-* Charge Start (Template Sensor) - The time battery charging will start.  This is manually controlled from the Solax Integration, as you might be on a different Tariff which starts at something other than 2am.  Note that the minutes will only show 2 digits if it shows 10 or above; just a quirk of making this work with Solax.
-
-* Charge End (Template Sensor) - The charge start time + the total charge time = the charge end time.
------
-<img src="Images/Main Controls 4.png" width="500">
-
-
-
-* Charge Current (Input Number) - You can manually control this, but it is set automatically by Battery Config section below.  It directly controls the rate at which your batteries will charge.
-
-* Offpeak Window (Input Number) - A key input which sets the length of your cheap offpeak period.  This affects the charge time and charge current in particular, and should be set to match your Tariff: 3 hours on Flux, 7 hours on Eco7 etc.
 
 -----
 ### Auto Charge Status
 
-<img src="Images/Auto Charge Status.png" width="500">
+<img src="Images/Auto Charge Calcs.png" width="500">
 
 * Auto Charge Status (Template Sensor) - Uses ifelse statement to show either "Charge Scheduled" or "Not Required".
 
@@ -107,8 +80,19 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 
 * SoC at End of Offpeak Tonight 5am (Template Sensor) - Shows the Battery SoC at the end of tonight's Offpeak period.  
 
-* SoC at Start of Offpeak Tomorrow 2am (Template Sensor) - Shows the Battery SoC at the beginning of tomorrow night's Offpeak period.  
+* SoC at Start of Offpeak Tomorrow 2am (Template Sensor) - Shows the Battery SoC at the beginning of tomorrow night's Offpeak period.
 
+* Usable SoC (Template Sensor) - How much charge is left in your battery in kWh.  This is calculated by taking the full capacity of your battery and subtracting your Overdischarge Soc; that leaves the useful amount of capacity before your battery goes into trickle discharge.  The *remainder* of this amount is your 'Usable SoC Now'.
+
+* Usage Left Today (Template Sensor) - Your Usage Today minus your actual Daily House Load.  Essentially how many kWh you have left to burn before midnight.
+
+* Auto Charge (Template Sensor) - Shows the calculated amount of Automatic Battery Charging that the system is planning on adding.  Changes dynamically as input numbers and sensors feed variable data into the algorithm.
+
+* Charge Time (Template Sensor) - Calculated amount of charge time.  Shows Auto charge time in Auto mode or your own configured charge time in Manual mode.
+
+* Charge Start (Template Sensor) - The time battery charging will start.  This is manually controlled from the Solax Integration, as you might be on a different Tariff which starts at something other than 2am.  Note that the minutes will only show 2 digits if it shows 10 or above; just a quirk of making this work with Solax.
+
+* Charge End (Template Sensor) - The charge start time + the total charge time = the charge end time.
 -----
 ### Inverter Stats & Future Solcast Data
 
