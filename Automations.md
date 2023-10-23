@@ -12,6 +12,96 @@ Copy below automations into your HA instance.
 
 ## Automation Code
 
+### Flux - Charge
+```
+alias: Flux - Charge
+description: >-
+  At just before 3pm, this automation judges whether an amount of charge should
+  be added to the batteries from the grid at Flux prices, before the expensive
+  import rate from 4-7pm.  From 0-30%, 3kWh is added.  From 31-40%, 2kWh is
+  added.  From 41-50%, 1kWh is added.  Above 50%, no charge is added.
+trigger:
+  - platform: time
+    at: "14:59:00"
+condition: []
+action:
+  - choose:
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.solax_battery_soc
+            below: 51
+            above: 40
+        sequence:
+          - service: number.set_value
+            data:
+              value: "20"
+            target:
+              entity_id: number.solax_timed_charge_end_minutes_2
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.solax_battery_soc
+            above: 30
+            below: 41
+        sequence:
+          - service: number.set_value
+            data:
+              value: "40"
+            target:
+              entity_id: number.solax_timed_charge_end_minutes_2
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.solax_battery_soc
+            below: 31
+            above: 1
+        sequence:
+          - service: number.set_value
+            data:
+              value: "59"
+            target:
+              entity_id: number.solax_timed_charge_end_minutes_2
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.solax_battery_soc
+            above: 60
+            below: 101
+        sequence:
+          - service: number.set_value
+            data:
+              value: "0"
+            target:
+              entity_id: number.solax_timed_charge_end_minutes_2
+    default: []
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.solax_update_charge_discharge_times_2
+  - delay:
+      hours: 1
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - service: number.set_value
+    data:
+      value: "0"
+    target:
+      entity_id: number.solax_timed_charge_end_minutes_2
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.solax_update_charge_discharge_times_2
+mode: single
+```
+
 
 ### Flux - Discharge Cutout
 ```
