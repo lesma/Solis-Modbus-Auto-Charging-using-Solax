@@ -27,4 +27,4 @@ After Installation please read the [User Guide](https://github.com/jevburchell/S
 
 ## .tar File
 
-[Download Here](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Files/Jev_HA_Solax_Auto_Charging_V2.1.tar)
+[Download Here](https://www.dropbox.com/scl/fi/3ukvgizdqn8eqj1schhkp/Jev_Solis_Auto_charging_V3.2.tar?rlkey=zcmp6sjenppd0n0l6v9he9gk5&dl=0)
