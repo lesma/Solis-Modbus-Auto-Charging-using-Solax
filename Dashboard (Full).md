@@ -703,22 +703,4 @@ views:
           - entity: sensor.solax_total_battery_discharge
             name: Total battery discharge
         title: Global Stats
-  - theme: Backend-selected
-    title: System Monitor
-    path: system-monitor
-    icon: mdi:desktop-classic
-    badges: []
-    cards:
-      - type: entities
-        entities:
-          - sensor.disk_free
-          - sensor.disk_use_percent
-          - sensor.last_boot
-          - sensor.memory_use_percent
-          - sensor.network_in_eth0
-          - sensor.network_out_eth0
-          - sensor.network_throughput_in_eth0
-          - sensor.network_throughput_out_eth0
-          - sensor.processor_temperature
-          - sensor.processor_use
 ```
