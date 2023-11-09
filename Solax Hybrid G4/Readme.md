@@ -7,20 +7,20 @@ The modified code contained within this section closely follows the work done or
 
 ## Notable differences and deviations
 
->- Dashboard modified for Hybrid entities.  Additional configuration options added
+- Dashboard modified for Hybrid entities.  Additional configuration options added
 - There is no solax entity to control "Timed Charge Current", therefore charging logic has been modified and additional helpers added as a workaround
->- No solax entity for "house load today".  This is used in many calculation.  A template has been added to provide an approximated value for this.
+- No solax entity for "house load today".  This is used in many calculation.  A template has been added to provide an approximated value for this.
 - Timed charge windows have to be set in 15 minute intervals, this has necessitated rounding of the calculated charge end time.  
->- Forced Discharging can not be set on schedule.  To force discharge a batteries with Hybrid inverters, it is required to set the inverter to manual mode.  The automations have been updated to do this.
+- Forced Discharging can not be set on schedule.  To force discharge a batteries with Hybrid inverters, it is required to set the inverter to manual mode.  The automations have been updated to do this.
 - Changes made to any solax modbus entity are sent to the inverter in real-time, so automations to update inverter times have been removed.
 
 ### Changes to Automations
 
->- **Flux - Charge:** This now sets the charge window to 1 hour  
+- **Flux - Charge:** This now sets the charge window to 1 hour  
 - **Flux - Charge Cutout:** New automation to cut out charging when battery reaches Flux Charge SoC (new helper, value can be set in dashboard)
->- **Flux - Discharge Cutout:** New helper and dashboard configuration entry added to set flux discharge cutout SoC rather than hard coded value. Logic changed to switch inverter back to "Self Use" mode
+- **Flux - Discharge Cutout:** New helper and dashboard configuration entry added to set flux discharge cutout SoC rather than hard coded value. Logic changed to switch inverter back to "Self Use" mode
 - **Flux - Discharge:** Logic change to set inverter to "manual mode"
->- **Solar - Battery Charging Automation:** End time rounded to nearest 15 minutes. Maximum drift from calculated charge time is +/- 8 minutes
+- **Solar - Battery Charging Automation:** End time rounded to nearest 15 minutes. Maximum drift from calculated charge time is +/- 8 minutes
 
 ### Installation
 
