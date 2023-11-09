@@ -1,0 +1,18 @@
+- alias: Solcast - API Poll Schedule
+  description: New API call Solcast
+  trigger:
+    - platform: time
+      at: "06:00:00"
+    - platform: time
+      at: "10:00:00"
+    - platform: time
+      at: "14:00:00"
+    - platform: time
+      at: "18:00:00"
+    - platform: time
+      at: "23:50:00"
+  condition: []
+  action:
+    - service: solcast_solar.update_forecasts
+      data: {}
+  mode: single

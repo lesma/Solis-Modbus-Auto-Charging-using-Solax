@@ -1,0 +1,184 @@
+- alias: Flux - Charge
+  description: >-
+    At just before 3pm, this automation charges the batteries to the % SoC defined in "Flux Charge SoC" before the 
+    expensive import rate from 4-7pm.
+  trigger:
+    - platform: time
+      at: "14:59:00"
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.solax_battery_capacity
+      below: input_number.flux_charge_soc
+  action:
+    - parallel:
+        - service: select.select_option
+          data:
+            option: "15:00"
+          target:
+            entity_id: select.solax_charger_start_time_2
+        - service: select.select_option
+          data:
+            option: "16:00"
+          target:
+            entity_id: select.solax_charger_end_time_2
+  mode: single
+
+- alias: Flux - Charge Cutout
+  description: >-
+    Monitors battery SoC when Flux - Charge automation running.  Stops charge when battery reaches % set in 
+    "Flux Charge SoC". Resets Charge start and end time to 15:00
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.solax_battery_capacity
+      above: input_number.flux_charge_soc
+  condition:
+    - condition: time
+      after: "15:00:00"
+      before: "16:00:00"
+  action:
+    - parallel:
+        - service: select.select_option
+          data:
+            option: "15:00"
+          target:
+            entity_id: select.solax_charger_start_time_2
+        - service: select.select_option
+          data:
+            option: "15:00"
+          target:
+            entity_id: select.solax_charger_end_time_2
+  mode: single
+
+- alias: Flux - Discharge Cutout
+  description: >-
+    Stops Flux battery discharging if the remaining SoC drops to 50% between the
+    hours of 16:00 and 19:00 with Flux discharging enabled
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.solax_battery_capacity
+      below: input_number.flux_discharge_cutout_soc
+  condition:
+    - condition: time
+      after: "16:00:00"
+      before: "19:00:00"
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+        - sat
+        - sun
+    - condition: state
+      entity_id: input_boolean.flux_discharge
+      state: "on"
+    - condition: state
+      entity_id: select.solax_charger_use_mode
+      state: "Manual Mode"
+  action:
+    - service: select.select_option
+      data:
+        option: "Self Use Mode"
+      target:
+        entity_id: select.solax_charger_use_mode
+  mode: single
+
+- alias: Flux - Discharge
+  description: ->
+    Sets inverter to manual mode and enables force discharge at 16:01 when flux_discharge is set to on in dashboard.  
+    A separate automation "Flux - Discharge Cutout" monitors the force discharge and sets the inverter to "self use" 
+    when batter SoC is below a defined value
+  trigger:
+    - platform: time
+      at: "16:01:00"
+  condition:
+    - condition: state
+      entity_id: input_boolean.flux_discharge
+      state: "on"
+    - condition: state
+      entity_id: select.solax_charger_use_mode
+      state: "Self Use Mode"
+  action:
+    - parallel:
+        - service: select.select_option
+          data:
+            option: "Manual Mode"
+          target:
+            entity_id: select.solax_charger_use_mode
+        - service: select.select_option
+          data:
+            option: "Force Discharge"
+          target:
+            entity_id: select.solax_manual_mode_select
+  mode: single
+
+- alias: Utility Meter - Set Flux (AM)
+  description: ""
+  trigger:
+    - platform: time
+      at: "05:00:00"
+      variables:
+        tariff: peak
+  condition: []
+  action:
+    - service: select.select_option
+      data:
+        option: Flux
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single
+
+- alias: Utility Meter - Set Flux (PM)
+  description: ""
+  trigger:
+    - platform: time
+      at: "19:00:00"
+      variables:
+        tariff: peak
+  condition: []
+  action:
+    - service: select.select_option
+      data:
+        option: Flux
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single
+
+- alias: Utility Meter - Set Offpeak
+  description: ""
+  trigger:
+    - platform: time
+      at: "02:00:00"
+      variables:
+        tariff: peak
+  action:
+    - service: select.select_option
+      data:
+        option: Offpeak
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single
+
+- alias: Utility Meter - Set Peak
+  description: ""
+  trigger:
+    - platform: time
+      at: "16:00:00"
+      variables:
+        tariff: peak
+  condition: []
+  action:
+    - service: select.select_option
+      data:
+        option: Peak
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single

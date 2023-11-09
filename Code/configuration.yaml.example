@@ -1,0 +1,42 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Required to allow automation to be created via UI
+automation ui : !include automations.yaml
+
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Template entries moved to separate file template.yaml.  Do not place template entires in this (configuration.yaml) file
+template: !include template.yaml
+
+#### START Solax Automation Block ####
+
+# Comment / uncomment (#) below automation file to used based on inverter type.
+# Current types are "default" or "solax hybrid"
+
+#automation solax: !include_dir_merge_list solax_automation/default_inverter/automations/
+automation solax: !include_dir_merge_list solax_automation/solax_hybrid_inverter/automations/
+
+# Do not change these
+input_boolean: !include solax_automation/helpers/input_boolean.yaml
+input_button: !include solax_automation/helpers/input_button.yaml
+input_datetime: !include solax_automation/helpers/input_datetime.yaml
+input_number: !include solax_automation/helpers/input_number.yaml
+#### END Solax Automation Block ####
+
+homeassistant:
+  allowlist_external_dirs:
+    - "/config"
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+
+

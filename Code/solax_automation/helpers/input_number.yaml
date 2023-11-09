@@ -1,0 +1,148 @@
+base_load:
+  name: "Base Load"
+  min: 0.0
+  max: 1.0
+  step: 0.01
+  unit_of_measurement: "kW"
+  mode: "slider"
+battery_capacity:
+  name: "Battery Capacity"
+  min: 1.0
+  max: 25.0
+  step: 0.01
+  unit_of_measurement: "kWh"
+  mode: "box"
+boost_charge:
+  name: "Boost Charge"
+  min: 0.0
+  max: 15.0
+  step: 1.0
+  unit_of_measurement: "kWh"
+  mode: "slider"
+expected_consumption:
+  name: "Expected Consumption"
+  min: 0.0
+  max: 50.0
+  step: 0.5
+  unit_of_measurement: kWh
+  mode: "box"
+expected_consumption_tomorrow:
+  name: "Expected Consumption Tomorrow"
+  min: 0.0
+  max: 50.0
+  step: 0.5
+  unit_of_measurement: "kWh"
+  mode: "box"
+force_charge_soc:
+  name: "Force Charge SoC"
+  min: 1.0
+  max: 20.0
+  step: 1.0
+  unit_of_measurement: "%"
+  mode: "box"
+offpeak_window:
+  name: "Offpeak Window"
+  min: 1.0
+  max: 7.0
+  step: 1.0
+  unit_of_measurement: "Hours"
+  mode: "box"
+overdischarge_soc:
+  name: "Overdischarge SoC"
+  min: 5.0
+  max: 25.0
+  step: 1.0
+  unit_of_measurement: "%"
+  mode: "box"
+target_usable_soc:
+  name: "Target Usable SoC"
+  min: 0.0
+  max: 20.0
+  step: 0.5
+  unit_of_measurement: "kWh"
+  mode: "slider"
+octopus_energy_import_standing_charge:
+  name: "Octopus Energy Import Standing Charge"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+octopus_energy_import_flux:
+  name: "Octopus Energy Import Flux"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+octopus_energy_import_peak:
+  name: "Octopus Energy Import Peak"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+octopus_energy_import_offpeak:
+  name: "Octopus Energy Import Offpeak"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+octopus_energy_export_flux:
+  name: "Octopus Energy Export Flux"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+octopus_energy_export_peak:
+  name: "Octopus Energy Export Peak"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+octopus_energy_export_offpeak:
+  name: "Octopus Energy Export Offpeak"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+flux_charge_soc:
+  name: "Flux Charge SoC"
+  min: 0.0
+  max: 100.0
+  step: 1.0
+  unit_of_measurement: "%"
+  mode: "slider"
+  icon: "mdi:battery-50"
+flux_discharge_cutout_soc:
+  name: "Flux Discharge Cutout SoC"
+  min: 10.0
+  max: 100.0
+  step: 1.0
+  unit_of_measurement: "%"
+  icon: "mdi:battery-30"
+  mode: "slider"
+hybrid_battery_charge_power:
+  name: "Hybrid Battery Charge Power"
+  min: 1000
+  max: 8000
+  step: 100
+  unit_of_measurement: "W"
+  mode: "slider"
+
+
+  
+
+
+
