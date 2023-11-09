@@ -122,7 +122,10 @@ condition:
 - condition: state
   entity_id: select.solax_charger_use_mode
   state: "Self Use Mode"
-action:
+- condition: numeric_state
+  entity_id: sensor.solax_battery_capacity
+  above: input_number.flux_discharge_cutout_soc
+  action:
 - parallel:
     - service: select.select_option
       data:
