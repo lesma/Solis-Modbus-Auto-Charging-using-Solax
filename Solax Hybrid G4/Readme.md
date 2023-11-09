@@ -75,7 +75,7 @@ This is the heart of the UI to control your Automatic Battery Charging.  The con
 * Solcast Data - Very simply gives you a representation of the expected output of your system for the next 5 days.  Note that today is the remainder of the yield for today - so after dusk it reads zero.
 -----
 ### Main Control Selectors
-<img src="Images/Main Control Selectors.png" width="500">
+<img src="../Images/Main Control Selectors.png" width="500">
 
 * Usage Today (Input Number) - Allows you to alter your expected consumption for today.  This is fed into the algorithm to calculate charge.  An [automation](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---expected-consumption-low-state-tracker) also notices if your actual consumption exceeds this number, and increases it to follow in real time.  Also at 23:55, when the ["Solar - Battery Charge Automation"](https://github.com/jevburchell/Solis-Modbus-Auto-Charging-using-Solax/blob/main/Automations.md#solar---battery-charge-automation) runs, it automatically syncs the two to ensure no anomailies in the charge calculation.
 
