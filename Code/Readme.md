@@ -1,6 +1,6 @@
 # YAML Based Configuration
 
-This project can now almost entirely be copied into your existing Home Assistant setup without manually having to create entries through the UI, with the exception of the dashboard. 
+This project can now almost entirely be copied into your existing Home Assistant setup without manually having to create entries through the UI, with the exception of the dashboard, and the helper "Today House Load" (Reimman Sum)
 
 All of the files and directories within this folder should be copied to your home assistant "config" directory.
 

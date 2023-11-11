@@ -109,3 +109,16 @@
 * Maximum Value: 9000
 * Step Size: 100
 * Unit of Measurement: W
+
+### Today House Load
+* Integration - Riemann Sum Integral
+* Input Sensor: sensor.solax_house_load
+* Integration Method: Left Riemann sum
+* Precision: 2
+* Metric Prefix: k
+* Time Unit: Hours
+
+### House Load Today
+* Utility Meter
+* Input Sensor: sensor.today_house_load
+* Meter Reset Cycle: Daily

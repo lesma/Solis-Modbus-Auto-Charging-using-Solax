@@ -1,0 +1,6 @@
+house_load_today:
+  name: "House Load Today"
+  source: "sensor.today_house_load"
+  unique_id: "house_load_today"
+  cycle: "daily"
+  periodically_resetting: false

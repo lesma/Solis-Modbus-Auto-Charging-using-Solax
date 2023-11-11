@@ -263,8 +263,3 @@
       unit_of_measurement: 'W'
       device_class: power
       state: "{{ states('sensor.solax_pv_current_2')| float(0) * states('sensor.solax_pv_voltage_2')| float(0) | round(0) }}"
-- sensor:
-    - name: "House Load Today"
-      unique_id: "house_load_today"
-      unit_of_measurement: 'kWh'
-      state: "{{ states('sensor.solax_today_s_import_energy') | float(0) + states('sensor.solax_today_s_yield') | float(0) - states('sensor.solax_today_s_export_energy') | float(0) - states('sensor.solax_battery_input_energy_today') | round(0) }}"

@@ -28,6 +28,7 @@ input_boolean: !include solax_automation/helpers/input_boolean.yaml
 input_button: !include solax_automation/helpers/input_button.yaml
 input_datetime: !include solax_automation/helpers/input_datetime.yaml
 input_number: !include solax_automation/helpers/input_number.yaml
+utility_meter: !include solax_automation/helpers/utility_meter.yaml
 #### END Solax Automation Block ####
 
 homeassistant:
