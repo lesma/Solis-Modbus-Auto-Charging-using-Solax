@@ -1,0 +1,8 @@
+off_peak_energy_start:
+  name: "Off-peak energy start"
+  has_date: false
+  has_time: true
+off_peak_energy_end:
+  name: "Off-peak energy end"
+  has_date: false
+  has_time: true

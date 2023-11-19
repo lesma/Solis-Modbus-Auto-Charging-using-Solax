@@ -1,0 +1,277 @@
+- alias: Flux - Charge
+  description: >-
+    At just before 3pm, this automation judges whether an amount of charge should
+    be added to the batteries from the grid at Flux prices, before the expensive
+    import rate from 4-7pm.  From 0-30%, 3kWh is added.  From 31-45%, 2kWh is
+    added.  From 46-60%, 1kWh is added.  Above 60%, no charge is added.
+  trigger:
+    - platform: time
+      at: "14:59:00"
+  condition: []
+  action:
+    - choose:
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.solax_battery_soc
+              below: 61
+              above: 45
+          sequence:
+            - service: number.set_value
+              data:
+                value: "20"
+              target:
+                entity_id: number.solax_timed_charge_end_minutes_2
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.solax_battery_soc
+              above: 30
+              below: 46
+          sequence:
+            - service: number.set_value
+              data:
+                value: "40"
+              target:
+                entity_id: number.solax_timed_charge_end_minutes_2
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.solax_battery_soc
+              below: 31
+              above: 1
+          sequence:
+            - service: number.set_value
+              data:
+                value: "59"
+              target:
+                entity_id: number.solax_timed_charge_end_minutes_2
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.solax_battery_soc
+              above: 60
+              below: 101
+          sequence:
+            - service: number.set_value
+              data:
+                value: "0"
+              target:
+                entity_id: number.solax_timed_charge_end_minutes_2
+      default: []
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: button.press
+      data: {}
+      target:
+        entity_id: button.solax_update_charge_discharge_times_2
+    - delay:
+        hours: 1
+        minutes: 2
+        seconds: 0
+        milliseconds: 0
+    - service: number.set_value
+      data:
+        value: "0"
+      target:
+        entity_id: number.solax_timed_charge_end_minutes_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: button.press
+      data: {}
+      target:
+        entity_id: button.solax_update_charge_discharge_times_2
+  mode: single
+
+- alias: Flux - Discharge Cutout
+  description: >-
+    Stops Flux battery discharging if the remaining SoC drops to 50% between the
+    hours of 16:00 and 19:00 with Flux discharging enabled
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.solax_battery_soc
+      below: 46
+  condition:
+    - condition: time
+      after: "16:00:00"
+      before: "19:00:00"
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+        - sat
+        - sun
+    - condition: state
+      entity_id: input_boolean.flux_discharge
+      state: "on"
+  action:
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: input_boolean.flux_discharge
+  mode: single
+
+- alias: Flux - Discharge Off
+  description: >-
+    Sets the Battery to Not Discharge to the grid.  Both Solax discharge values
+    set to 16:00
+  trigger:
+    - platform: state
+      entity_id:
+        - input_boolean.flux_discharge
+      from: "on"
+      to: "off"
+  condition: []
+  action:
+    - parallel:
+        - service: number.set_value
+          data:
+            value: "16"
+          target:
+            entity_id: number.solax_timed_discharge_start_hours
+        - service: number.set_value
+          data:
+            value: "0"
+          target:
+            entity_id: number.solax_timed_discharge_start_minutes
+        - service: number.set_value
+          data:
+            value: "16"
+          target:
+            entity_id: number.solax_timed_discharge_end_hours
+        - service: number.set_value
+          data:
+            value: "0"
+          target:
+            entity_id: number.solax_timed_discharge_end_minutes
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: button.press
+      data: {}
+      target:
+        entity_id:
+          - button.solax_update_charge_discharge_times
+  mode: single
+
+- alias: Flux - Discharge On
+  description: >-
+    Sets the Battery to Discharge to the grid at full power between 16:00 and
+    19:00
+  trigger:
+    - platform: state
+      entity_id:
+        - input_boolean.flux_discharge
+      from: "off"
+      to: "on"
+  condition: []
+  action:
+    - parallel:
+        - service: number.set_value
+          data:
+            value: "16"
+          target:
+            entity_id: number.solax_timed_discharge_start_hours
+        - service: number.set_value
+          data:
+            value: "0"
+          target:
+            entity_id: number.solax_timed_discharge_start_minutes
+        - service: number.set_value
+          data:
+            value: "19"
+          target:
+            entity_id: number.solax_timed_discharge_end_hours
+        - service: number.set_value
+          data:
+            value: "0"
+          target:
+            entity_id: number.solax_timed_discharge_end_minutes
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: button.press
+      data: {}
+      target:
+        entity_id:
+          - button.solax_update_charge_discharge_times
+  mode: single
+
+- alias: Utility Meter - Set Flux (AM)
+  description: ""
+  trigger:
+    - platform: time
+      at: "05:00:00"
+      variables:
+        tariff: peak
+  condition: []
+  action:
+    - service: select.select_option
+      data:
+        option: Flux
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single
+
+- alias: Utility Meter - Set Flux (PM)
+  description: ""
+  trigger:
+    - platform: time
+      at: "19:00:00"
+      variables:
+        tariff: peak
+  condition: []
+  action:
+    - service: select.select_option
+      data:
+        option: Flux
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single
+
+- alias: Utility Meter - Set Offpeak
+  description: ""
+  trigger:
+    - platform: time
+      at: "02:00:00"
+      variables:
+        tariff: peak
+  action:
+    - service: select.select_option
+      data:
+        option: Offpeak
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single
+
+- alias: Utility Meter - Set Peak
+  description: ""
+  trigger:
+    - platform: time
+      at: "16:00:00"
+      variables:
+        tariff: peak
+  condition: []
+  action:
+    - service: select.select_option
+      data:
+        option: Peak
+      target:
+        entity_id:
+          - select.octopus_flux_tariff
+          - select.octopus_flux_export_tariff
+  mode: single

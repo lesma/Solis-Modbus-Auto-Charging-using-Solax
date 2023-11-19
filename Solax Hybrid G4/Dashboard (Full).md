@@ -1,6 +1,6 @@
 This is the Full version of the Automated Charging Dashboard.
 
-<img src="Images/Full Dashboard.png">
+<img src="../Images/Full_Dashboard_Hybrid.png">
 
 # Installation
 
@@ -37,7 +37,8 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
 
 ## Dashboard (Full) Code
 ```
-title: Casa Del AutoCharge
+background: black
+title: Rowlington Way
 views:
   - theme: Mushroom
     title: Solar New
@@ -54,7 +55,7 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_battery_soc
+                entity: sensor.solax_battery_capacity
                 icon_type: none
                 name: SoC
                 layout: vertical
@@ -63,7 +64,7 @@ views:
                     ha-card {
                       --primary-text-color: rgb(var(--rgb-green));
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_battery_charge_today
+                entity: sensor.solax_battery_input_energy_today
                 icon_type: none
                 name: Charged
                 layout: vertical
@@ -72,7 +73,7 @@ views:
                     ha-card {
                       --primary-text-color: rgb(105, 205, 162);
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_battery_discharge_today
+                entity: sensor.solax_battery_output_energy_today
                 icon_type: none
                 layout: vertical
                 name: Discharged
@@ -98,7 +99,7 @@ views:
                   tickAmount: 6
               - id: second
                 min: 0
-                max: 9
+                max: 12
                 decimals: 0
                 opposite: true
                 apex_config:
@@ -116,27 +117,27 @@ views:
             experimental:
               color_threshold: true
             series:
-              - entity: sensor.solax_battery_soc
+              - entity: sensor.solax_battery_capacity
                 yaxis_id: first
                 name: SoC
                 color_threshold:
                   - value: 100
                     color: green
-                  - value: 50
+                  - value: 40
                     color: yellow
-                  - value: 35
+                  - value: 30
                     color: orange
                   - value: 20
                     color: red
                 stroke_width: 2
                 extend_to: now
-              - entity: sensor.solax_battery_charge_today
+              - entity: sensor.solax_battery_input_energy_today
                 yaxis_id: second
                 name: Charged
                 color: rgb(105, 205, 162)
                 stroke_width: 1
                 extend_to: now
-              - entity: sensor.solax_battery_discharge_today
+              - entity: sensor.solax_battery_output_energy_today
                 yaxis_id: second
                 name: Discharged
                 color: rgb(248, 71, 149)
@@ -158,9 +159,9 @@ views:
                 card_mod:
                   style: |
                     ha-card {
-                      --primary-text-color: rgb(var(--rgb-grey));
+                      --primary-text-color: rgb(var(--rgb-white));
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_house_load_today
+                entity: sensor.house_load_today
                 name: Usage
                 layout: vertical
                 icon_color: orange
@@ -170,7 +171,7 @@ views:
                     ha-card {
                       --primary-text-color: rgb(var(--rgb-orange));
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_grid_import_today
+                entity: sensor.solax_today_s_import_energy
                 layout: vertical
                 icon_color: green
                 name: Import
@@ -180,7 +181,7 @@ views:
                     ha-card {
                       --primary-text-color: rgb(var(--rgb-red));
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_grid_export_today
+                entity: sensor.solax_today_s_export_energy
                 name: Export
                 layout: vertical
                 icon_color: red
@@ -227,21 +228,21 @@ views:
                 yaxis_id: first
                 name: House Load
                 stroke_width: 1
-                color: grey
+                color: white
                 extend_to: now
-              - entity: sensor.solax_house_load_today
+              - entity: sensor.house_load_today
                 yaxis_id: second
                 name: Consumption
                 stroke_width: 1
                 color: orange
                 extend_to: now
-              - entity: sensor.solax_grid_export_today
+              - entity: sensor.solax_today_s_export_energy
                 yaxis_id: second
                 name: Export
                 stroke_width: 1
                 color: green
                 extend_to: now
-              - entity: sensor.solax_grid_import_today
+              - entity: sensor.solax_today_s_import_energy
                 yaxis_id: second
                 name: Import
                 stroke_width: 1
@@ -251,7 +252,7 @@ views:
             type: grid
             cards:
               - type: gauge
-                name: Import/Export
+                name: Grid Import/Export
                 min: -4000
                 max: 4000
                 needle: true
@@ -259,24 +260,18 @@ views:
                   green: 0
                   yellow: 4000
                   red: -4000
-                entity: sensor.solax_meter_active_power
+                entity: sensor.solax_measured_power
               - type: gauge
-                entity: sensor.solax_battery_input_energy
-                name: Batt Charge
-                needle: false
-                min: 0
+                name: Bat Discharge/Charge
+                min: -4000
                 max: 4000
+                entity: sensor.solax_battery_power_charge
+                needle: true
                 severity:
                   green: 0
                   yellow: 4000
                   red: -4000
-              - type: gauge
-                entity: sensor.solax_battery_output_energy
-                name: Batt Discharge
-                min: 0
-                max: 4000
-                needle: false
-            columns: 3
+            columns: 2
       - square: false
         columns: 1
         type: grid
@@ -285,16 +280,12 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_power_generation_today
+                entity: sensor.solax_today_s_yield
                 name: Yield
                 icon_type: none
                 layout: vertical
-                card_mod:
-                  style: |
-                    ha-card {
-                      --primary-text-color: rgb(var(--rgb-grey));
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_pv_total_power
+                entity: sensor.solax_pv_power_total
                 icon_type: none
                 layout: vertical
                 name: Output
@@ -354,7 +345,7 @@ views:
               show: true
               title: Panels
             series:
-              - entity: sensor.solax_pv_total_power
+              - entity: sensor.solax_pv_power_total
                 yaxis_id: first
                 name: Combined Output
                 stroke_width: 1
@@ -372,11 +363,11 @@ views:
                 stroke_width: 1
                 color: magenta
                 extend_to: now
-              - entity: sensor.solax_power_generation_today
+              - entity: sensor.solax_today_s_yield
                 yaxis_id: second
                 name: Today Yield
                 stroke_width: 1
-                color: grey
+                color: white
                 extend_to: now
       - square: false
         columns: 1
@@ -415,22 +406,7 @@ views:
                 icon: mdi:battery-charging-40
                 icon_height: 20px
                 name: Auto Charge
-              - show_name: true
-                show_icon: true
-                type: button
-                entity: automation.solar_update_times
-                icon_height: 20px
-                name: Update Times
-                show_state: false
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.solar_update_times
-                  data:
-                    skip_condition: false
-                icon: mdi:clock-time-eight-outline
-            columns: 4
+            columns: 3
           - show_name: true
             show_icon: false
             show_state: true
@@ -586,58 +562,24 @@ views:
     icon: mdi:solar-power-variant
     badges: []
     cards:
-      - square: false
-        type: grid
-        title: System Configuration
-        cards:
-          - square: false
-            type: grid
-            cards:
-              - type: custom:mushroom-number-card
-                entity: input_number.battery_capacity
-                layout: vertical
-                icon_type: none
-                display_mode: ''
-              - type: custom:mushroom-number-card
-                entity: input_number.overdischarge_soc
-                layout: vertical
-                icon_type: none
-              - type: custom:mushroom-number-card
-                entity: input_number.force_charge_soc
-                icon_type: none
-                layout: vertical
-              - type: custom:mushroom-number-card
-                entity: input_number.offpeak_window
-                layout: vertical
-                icon_type: none
-              - type: custom:mushroom-number-card
-                entity: number.solax_timed_discharge_current
-                icon_type: none
-                layout: vertical
-                name: Timed Discharge Current
-              - type: custom:mushroom-number-card
-                entity: number.solax_timed_charge_current
-                icon_type: none
-                name: Charge Current
-                fill_container: false
-                layout: vertical
-                display_mode: slider
-            columns: 2
-          - type: entities
-            entities:
-              - entity: sensor.soc_total_usable
-                name: Useful System Capacity
-              - entity: sensor.soc_usableforcecharge
-                name: System Capacity Above Forcecharge
-              - entity: sensor.calculated_charge_current
-                name: Calculated Charge Current
-              - entity: sensor.battery_charge_power
-                name: Set Charge Power
-        columns: 1
+      - type: entities
+        entities:
+          - entity: sensor.solax_grid_export_total
+            name: Export total
+          - entity: sensor.solax_grid_import_total
+            name: Import total
+          - entity: sensor.solax_total_solar_energy
+            name: Generation total
+          - entity: sensor.solax_battery_input_energy_total
+            name: Total battery charge
+          - entity: sensor.solax_battery_output_energy_total
+            name: Total battery discharge
+        title: Global Stats
       - type: entities
         entities:
           - entity: input_number.octopus_energy_import_standing_charge
             name: Import Standing Charge
+          - entity: select.octopus_flux_export_tariff
           - entity: sensor.octopus_flux_export_tariff_flux
           - entity: input_number.octopus_energy_export_flux
             name: Flux Export Rate
@@ -647,6 +589,7 @@ views:
           - entity: sensor.octopus_flux_export_tariff_peak
           - entity: input_number.octopus_energy_export_peak
             name: Peak Export Rate
+          - entity: select.octopus_flux_tariff
           - entity: sensor.octopus_flux_tariff_flux
           - entity: input_number.octopus_energy_import_flux
             name: Flux Import Rate
@@ -661,46 +604,69 @@ views:
         type: grid
         cards:
           - type: entities
-            entities:
-              - entity: number.solax_timed_charge_current
             title: Manual Charge Time Controls
+            entities:
+              - entity: select.solax_charger_start_time_1
+              - entity: select.solax_charger_end_time_1
+              - entity: select.solax_selfuse_night_charge_enable
+              - entity: number.solax_selfuse_nightcharge_upper_soc
           - type: entities
             entities:
-              - entity: number.solax_timed_charge_start_hours
-              - entity: number.solax_timed_charge_start_minutes
-              - entity: number.solax_timed_charge_end_hours
-              - entity: number.solax_timed_charge_end_minutes
-              - entity: button.solax_update_charge_discharge_times
-          - type: entities
-            entities:
-              - entity: number.solax_timed_charge_start_hours_2
-              - entity: number.solax_timed_charge_start_minutes_2
-              - entity: number.solax_timed_charge_end_hours_2
-              - entity: number.solax_timed_charge_end_minutes_2
-              - entity: button.solax_update_charge_discharge_times_2
+              - entity: select.solax_charger_start_time_2
+              - entity: select.solax_charger_end_time_2
+              - entity: select.solax_charge_and_discharge_period2_enable
             state_color: false
           - type: entities
             entities:
-              - entity: number.solax_timed_discharge_start_hours
-              - entity: number.solax_timed_discharge_start_minutes
-              - entity: number.solax_timed_discharge_end_hours
-              - entity: number.solax_timed_discharge_end_minutes
-              - entity: number.solax_timed_discharge_current
-              - entity: button.solax_update_charge_discharge_times
+              - entity: select.solax_discharger_start_time_1
+              - entity: select.solax_discharger_end_time_1
         columns: 1
-      - type: entities
-        entities:
-          - entity: sensor.solax_house_load_total
-            name: Consumption total
-          - entity: sensor.solax_meter_grid_export_total
-            name: Export total
-          - entity: sensor.solax_meter_grid_import_total
-            name: Import total
-          - entity: sensor.solax_power_generation_total
-            name: Generation total
-          - entity: sensor.solax_total_battery_charge
-            name: Total battery charge
-          - entity: sensor.solax_total_battery_discharge
-            name: Total battery discharge
-        title: Global Stats
+      - square: false
+        type: grid
+        title: System Configuration
+        cards:
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-number-card
+                entity: input_number.battery_capacity
+                layout: vertical
+                icon_type: none
+                display_mode: buttons
+              - type: custom:mushroom-number-card
+                entity: input_number.overdischarge_soc
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.force_charge_soc
+                icon_type: none
+                layout: vertical
+              - type: custom:mushroom-number-card
+                entity: input_number.offpeak_window
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.flux_charge_soc
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.flux_discharge_cutout_soc
+                layout: vertical
+                icon_type: none
+              - type: custom:mushroom-number-card
+                entity: input_number.hybrid_battery_charge_power
+                layout: vertical
+                icon_type: none
+            columns: 2
+          - type: entities
+            entities:
+              - entity: sensor.soc_total_usable
+                name: Useful System Capacity
+              - entity: sensor.soc_usableforcecharge
+                name: System Capacity Above Forcecharge
+              - entity: sensor.calculated_charge_current
+                name: Calculated Charge Current
+              - entity: sensor.battery_charge_power
+                name: Set Charge Power
+        columns: 1
 ```

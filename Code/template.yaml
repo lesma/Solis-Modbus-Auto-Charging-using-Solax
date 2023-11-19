@@ -1,0 +1,8 @@
+#### START Solax Sensor Block ####
+# Comment / uncomment (#) sensor include file below based on inverter type.
+# Current types are "default" or "solax hybrid"
+
+#!include solax_automation/default_inverter/sensors.yaml
+!include solax_automation/solax_hybrid_inverter/sensors.yaml
+
+#### END Solax Sensor Block ####
