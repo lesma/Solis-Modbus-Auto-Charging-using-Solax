@@ -1,47 +1,47 @@
 ##Energy Cost Calculation Sensors
 - sensor:
     - name: "peak_export_profit"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{ ( states('input_number.octopus_energy_export_peak')| float(0) * states('sensor.octopus_flux_export_tariff_peak')| float(0)) | round(2) }}"
 - sensor:
     - name: "flux_export_profit"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{ ( states('input_number.octopus_energy_export_flux')| float(0) * states('sensor.octopus_flux_export_tariff_flux')| float(0)) | round(2) }}"
 - sensor:
     - name: "offpeak_export_profit"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{ ( states('input_number.octopus_energy_export_offpeak')| float(0) * states('sensor.octopus_flux_export_tariff_offpeak')| float(0)) | round(2) }}"
 - sensor:
     - name: "daily_elec_export_profit"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{ (states('sensor.peak_export_profit')| float(0) + states('sensor.flux_export_profit')| float(0) + states('sensor.offpeak_export_profit')| float(0)) | round(2) }}"
 - sensor:
     - name: "peak_import_cost"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{(( states('input_number.octopus_energy_import_peak')| float(0) * states('sensor.octopus_flux_tariff_peak')| float(0))) | round(2) }}"
 - sensor:
     - name: "flux_import_cost"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{(( states('input_number.octopus_energy_import_flux')| float(0) * states('sensor.octopus_flux_tariff_flux')| float(0))) | round(2) }}"
 - sensor:
     - name: "offpeak_import_cost"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{(( states('input_number.octopus_energy_import_offpeak')| float(0) * states('sensor.octopus_flux_tariff_offpeak')| float(0))) | round(2) }}"
 - sensor:
     - name: "daily_elec_import_cost"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{(states('sensor.peak_import_cost')| float(0) + states('sensor.flux_import_cost')| float(0) + states('sensor.offpeak_import_cost')| float(0) + states('input_number.octopus_energy_import_standing_charge')| float(0)) | round(2) }}"
 - sensor:
     - name: "daily_import_export_cost"
-      unit_of_measurement: '£'
+      unit_of_measurement: "£"
       device_class: monetary
       state: "{{((states('sensor.daily_elec_import_cost')| float(0) - states('sensor.daily_elec_export_profit')| float(0))) | round(2) }}"
 - sensor:
@@ -62,7 +62,7 @@
 - sensor:
     - name: "House Load Today Forecast"
       unique_id: "house_load_today_4cast"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ (states('sensor.house_load_today') | float(0) / states('sensor.current_hour') | float(0) * 24) | round(1) }}"
 
@@ -71,43 +71,43 @@
 - sensor:
     - name: "soc_overdischarge_percent"
       unique_id: "soc_overdischarge_percent"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ (states('input_number.overdischarge_soc') | float(0) / 100) | round(2) }}"
 - sensor:
     - name: "soc_usable_percent"
       unique_id: "soc_usable_percent"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ (1 - states('sensor.soc_overdischarge_percent') | float(0)) | round(2) }}"
 - sensor:
     - name: "soc_forcecharge_percent"
       unique_id: "soc_forcecharge_percent"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ (states('input_number.force_charge_soc') | float(0) / 100) | round(2) }}"
 - sensor:
     - name: "soc_usableforcecharge"
       unique_id: "soc_usableforcecharge"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ (1 - states('sensor.soc_forcecharge_percent') | float(0)) * (states('input_number.battery_capacity') | float (0)) | round(2) }}"
 - sensor:
     - name: "soc_total_usable"
       unique_id: "soc_total_usable"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ (states('sensor.soc_usable_percent') | float(0) * states('input_number.battery_capacity') | float (0)) | round(2) }}"
 - sensor:
     - name: "soc_usable_kwh"
       unique_id: "soc_usable_kwh"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ ((states('sensor.solax_battery_capacity') | float(0) / 100) * states('input_number.battery_capacity') | float (0)) - (states('input_number.battery_capacity') | float (0) * states('sensor.soc_overdischarge_percent') | float (0)) | round(2) }}"
 - sensor:
     - name: "soc_required_charge"
       unique_id: "soc_required_charge"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = (states('input_number.target_usable_soc') | float(0) - states('sensor.soc_at_start_of_offpeak_tomorrow_no_charge') | float(0)) | round(2)%}
@@ -116,16 +116,22 @@
 - sensor:
     - name: "soc_required_charge_plus_boost"
       unique_id: "soc_required_charge_plus_boost"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = (states('sensor.soc_required_charge') | float(0) + states('input_number.boost_charge') | float(0)) | round(2)%}
         {% set max = (states('sensor.soc_usableforcecharge') | float(0))%}
         {{ ([0, sum, max] | sort)[1] }}
 - sensor:
+    - name: "soc_required_charge_plus_boost_percent"
+      unique_id: "soc_required_charge_plus_boost_percent"
+      unit_of_measurement: "%"
+      device_class: energy
+      state: "{{ (states('sensor.soc_required_charge_plus_boost') | float(0) / states('input_number.battery_capacity') | float(0)) * 100| round(2) }}"
+- sensor:
     - name: "SoC at Start of Offpeak Tonight"
       unique_id: "soc_start_of_offpeak_tonight"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = states('sensor.solcast_pv_forecast_forecast_remaining_today') | float(0) + states('sensor.soc_usable_kwh') | float(0) - (states('input_number.expected_consumption') | float(0) - states('sensor.house_load_today') | float(0)) - (states('input_number.base_load') | float(0) * states('sensor.soc_charge_start_time_decimal') | float(0)) | round(2)%}
@@ -134,7 +140,7 @@
 - sensor:
     - name: "SoC at End of Offpeak Tonight - No Charge"
       unique_id: "soc_end_of_offpeak_no_charge"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = states('sensor.soc_at_start_of_offpeak_tonight') |float(0) - (states('input_number.offpeak_window') | float(0) * states('input_number.base_load') |float(0)) | round(2)%}
@@ -143,7 +149,7 @@
 - sensor:
     - name: "SoC at End of Offpeak Tonight - With Charge"
       unique_id: "soc_end_of_offpeak_with_charge"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = (states('sensor.soc_at_start_of_offpeak_tonight') | float(0) + states('sensor.soc_required_charge_plus_boost') | float(0) - (states('input_number.offpeak_window') | float(0) - states('sensor.soc_charge_time_decimal') | float(0)) * states('input_number.base_load') | float(0))| round(2)%}
@@ -152,7 +158,7 @@
 - sensor:
     - name: "SoC at Start of Offpeak Tomorrow - No Charge"
       unique_id: "soc_start_of_offpeak_tomorrow_no_charge"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = states('sensor.soc_at_end_of_offpeak_tonight_no_charge') | float(0) + states('sensor.solcast_pv_forecast_forecast_tomorrow') | float(0) - (states('input_number.expected_consumption_tomorrow') | float(0) - (states('input_number.offpeak_window') | float(0) * states('input_number.base_load') | float(0))) - (states('input_number.base_load') | float(0) * states('sensor.soc_charge_start_time_decimal') | float(0)) | round(2)%}
@@ -161,7 +167,7 @@
 - sensor:
     - name: "SoC at Start of Offpeak Tomorrow - With Charge"
       unique_id: "soc_start_of_offpeak_tomorrow_with_charge"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: |-
         {% set sum = states('sensor.soc_at_end_of_offpeak_tonight_with_charge') | float(0) + states('sensor.solcast_pv_forecast_forecast_tomorrow') | float(0) - (states('input_number.expected_consumption_tomorrow') | float(0) - (states('input_number.offpeak_window') | float(0) * states('input_number.base_load') | float(0))) - (states('input_number.base_load') | float(0) * states('sensor.soc_charge_start_time_decimal') | float(0)) | round(2)%}
@@ -170,9 +176,9 @@
 - sensor:
     - name: "SoC at Start of Offpeak Tomorrow Display"
       unique_id: "soc_start_offpeak_tomorrow_display"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
-      state:  >
+      state: >
         {% if states('sensor.soc_at_start_of_offpeak_tomorrow_no_charge')|float(0) == states('sensor.soc_at_start_of_offpeak_tomorrow_with_charge')|float(0) %}
           {{ states('sensor.soc_at_start_of_offpeak_tomorrow_no_charge')|float(0) }}
         {% else %}
@@ -180,11 +186,11 @@
         {% endif %}
       availability: >
         {{ states('sensor.soc_at_start_of_offpeak_tomorrow_no_charge')|is_number and
-           states('sensor.soc_at_start_of_offpeak_tomorrow_with_charge')|is_number }}
+          states('sensor.soc_at_start_of_offpeak_tomorrow_with_charge')|is_number }}
 - sensor:
     - name: "Battery Charge Power"
       unique_id: "battery_charge_power"
-      unit_of_measurement: 'W'
+      unit_of_measurement: "W"
       device_class: power
       #state: "{{((states('number.solax_timed_charge_current') | float(0) * 55)) | round(2) }}"
       # Workaround due to lack of entity with hybrid inverters
@@ -192,13 +198,13 @@
 - sensor:
     - name: "calculated_charge_current"
       unique_id: "calculated_charge_current"
-      unit_of_measurement: 'A'
+      unit_of_measurement: "A"
       device_class: current
       state: "{{ (states('sensor.soc_usableforcecharge') | float(0) / states('input_number.offpeak_window') | float(0) * 1000 / 55 | float(0)) | round(0) }}"
 - sensor:
     - name: "Auto Charge Scheduled"
       unique_id: "auto_charge_scheduled"
-      state:  >
+      state: >
         {% if states('sensor.soc_required_charge') | float(0) > 0.01 %}
           Charge Scheduled
         {% else %}
@@ -250,16 +256,53 @@
 - sensor:
     - name: "Remaining Consumption Today"
       unique_id: "remaining_consumption_today"
-      unit_of_measurement: 'kWh'
+      unit_of_measurement: "kWh"
       device_class: energy
       state: "{{ states('input_number.expected_consumption')| float(0) - states('sensor.house_load_today')| float(0) | round(1) }}"
 - sensor:
     - name: "String 1 Output"
-      unit_of_measurement: 'W'
+      unit_of_measurement: "W"
       device_class: power
       state: "{{ states('sensor.solax_pv_current_1')| float(0) * states('sensor.solax_pv_voltage_1')| float(0) | round(0) }}"
 - sensor:
     - name: "String 2 Output"
-      unit_of_measurement: 'W'
+      unit_of_measurement: "W"
       device_class: power
       state: "{{ states('sensor.solax_pv_current_2')| float(0) * states('sensor.solax_pv_voltage_2')| float(0) | round(0) }}"
+
+## Variable costs
+- sensor:
+    - name: "today_mock_variable_cost"
+      unique_id: "today_mock_variable_cost"
+      unit_of_measurement: "£"
+      device_class: monetary
+      state: "{{(( states('input_number.octopus_mock_import_variable')| float(0) * states('sensor.house_load_today')| float(0) + states('input_number.octopus_energy_import_standing_charge')| float(0))) | round(2) }}"
+- sensor:
+    - name: "Today Electricity Cost Saved"
+      unique_id: "today_electricity_cost_saved"
+      unit_of_measurement: "£"
+      device_class: monetary
+      state: "{{(( states('sensor.today_mock_variable_cost')| float(0) - states('sensor.daily_import_export_cost')| float(0))) | round(2) }}"
+      availability: '{{ today_at("00:01") <= now() < today_at("23:59") }}'
+- sensor:
+    - name: "Today Solar Savings"
+      unique_id: "today_solar_savings"
+      unit_of_measurement: "£"
+      device_class: monetary
+      state: "{{(( states('sensor.solax_today_s_solar_energy')| float(0) * states('input_number.octopus_mock_import_variable')| float(0))) | round(2) }}"
+- sensor:
+    - name: "Today Electricity Savings Excluding Solar"
+      unique_id: "today_electricity_savings_excluding_solar"
+      unit_of_measurement: "£"
+      device_class: monetary
+      state: "{{(( states('sensor.today_electricity_cost_saved')| float(0) - states('sensor.today_solar_savings')| float(0))) | round(2) }}"
+
+## Saving sessions
+- sensor:
+    - name: "Octopus Energy Saving Session Start Datetime"
+      unique_id: "octopus_energy_saving_session_start_datetime"
+      state: "{{ strptime(states('binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions.attributes.next_joined_event_start'), '%d %B %Y at %H:%M:%S', as_datetime('3000-01-01')) }}"
+- sensor:
+    - name: "Octopus Energy Saving Session Today"
+      unique_id: "octopus_energy_saving_session_today"
+      state: "{{ states('sensor.octopus_energy_saving_session_start_datetime') | as_timestamp - as_timestamp(now()) < 86400 }}"

@@ -10,6 +10,10 @@ All templates and helpers required for this project are included in the associat
 
 If you have existing automations and helpers from this project manually configured via UI, you need to delete these prior to restating / reloading HA.
 
+You will also need to update the "Octopus Energy Saving Session Start Datetime" sensor to look at the correct sensor on the Octopus Energy sensor, and in the automation Solar - Saving Session Discharge
+
+You may wish to use the Octopus Energy Blueprints for auto joining saving sessions, see [Octopus Energy Blueprints](https://bottlecapdave.github.io/HomeAssistant-OctopusEnergy/blueprints/
+
 ## configuration.yaml
 The provided configuration.yaml.example should be used as a guide to modify your existing configuration.yaml.  Essentially, the changes allow the project files to be read and referenced from the solax_automation folder, and still allows configuration via the UI for unrelated items. 
 
@@ -19,6 +23,7 @@ Please read the comments in the configuration.yaml.example file.
 You need to select your inverter type.  Either "default" or "solax hybrid"
 
 Add any template items from your configuration.yaml file into this template.yaml file. 
+
 
 ## Testing and Deploying Changes
 Use **Developer Tools** -> **Check Configuration** to check the configuration is valid.  Correct any errors if there are any

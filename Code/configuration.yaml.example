@@ -29,7 +29,49 @@ input_button: !include solax_automation/helpers/input_button.yaml
 input_datetime: !include solax_automation/helpers/input_datetime.yaml
 input_number: !include solax_automation/helpers/input_number.yaml
 utility_meter: !include solax_automation/helpers/utility_meter.yaml
+
+var:
+  total_solar_battery_cost_saving:
+    friendly_name: 'Total Solar Battery Cost Saving'
+    initial_value: 0
+    icon: mdi:cash
+    unit_of_measurement: "£"
+
+# Should likley be moved
+sensor:
+  - platform: template
+    sensors:
+      octopus_flux_import_cost:
+        friendly_name: Octopus Flux Import Cost
+        unit_of_measurement: GBP/kWh
+        value_template: >
+          {% set tariff = { "Peak": 0.2718, "Day": 0.2718, "OffPeak": 0.2718 } %}
+          {% set time = { "month": (now().strftime('%m') | int), "hour": (now().strftime('%H') | int), "weekday": (now().weekday() | int ) } %}
+          {%if (time.hour >=2) and (time.hour <5) %}
+            {{ tariff.OffPeak }}
+          {%elif (time.hour >=16) and (time.hour < 19) %}
+            {{ tariff.Peak }}
+          {% else %}
+            {{ tariff.Day }}
+          {% endif %}
+
+      octopus_flux_export_cost:
+        friendly_name: Octopus Flux Export Cost
+        unit_of_measurement: GBP/kWh
+        value_template: >
+          {% set tariff = { "Peak": 0.0, "Day": 0.0, "OffPeak": 0.0 } %}
+          {% set time = { "month": (now().strftime('%m') | int), "hour": (now().strftime('%H') | int), "weekday": (now().weekday() | int ) }  %}
+          {%if (time.hour >=2) and (time.hour <5) %}
+            {{ tariff.OffPeak }}
+          {%elif (time.hour >=16) and (time.hour < 19) %}
+            {{ tariff.Peak }}
+          {% else %}
+            {{ tariff.Day }}
+          {% endif %}
+
 #### END Solax Automation Block ####
+
+
 
 homeassistant:
   allowlist_external_dirs:

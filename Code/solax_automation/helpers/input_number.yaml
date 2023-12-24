@@ -140,9 +140,34 @@ hybrid_battery_charge_power:
   step: 100
   unit_of_measurement: "W"
   mode: "slider"
-
-
-  
-
-
-
+octopus_mock_import_variable:
+  name: "Octopus Mock Energy Import Variable"
+  min: 0.0
+  max: 1.0
+  step: 0.0001
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+manual_electricity_cost_saving_adjustment:
+  name: "Manual Electricity Cost Saving Adjustment"
+  min: -100.0
+  max: 100.0
+  step: 0.01
+  unit_of_measurement: ".."
+  icon: "mdi:currency-usd"
+  mode: "box"
+saving_session_discharge_rate:
+  name: "Saving session discharge rate"
+  min: 100
+  max: 8000
+  step: 100
+  unit_of_measurement: "W"
+  mode: "slider"
+saving_session_desired_battery_soc:
+  name: "Saving session desired battery SoC"
+  min: 10.0
+  max: 100.0
+  step: 1.0
+  unit_of_measurement: "%"
+  icon: "mdi:battery-90"
+  mode: "slider"

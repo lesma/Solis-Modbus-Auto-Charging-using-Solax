@@ -1,6 +1,14 @@
-house_load_today:
+meter_house_load_today:
   name: "House Load Today"
-  source: "sensor.today_house_load"
-  unique_id: "house_load_today"
+  source: "sensor.total_house_load"
+  unique_id: "meter_house_load_today"
   cycle: "daily"
   periodically_resetting: false
+
+octopus_energy_cost_saving:
+  name: "Octopus Energy Cost Saving"
+  source: "sensor.today_electricity_cost_saved"
+  unique_id: "octopus_energy_cost_saving"
+  cycle: "daily"
+  periodically_resetting: false
+

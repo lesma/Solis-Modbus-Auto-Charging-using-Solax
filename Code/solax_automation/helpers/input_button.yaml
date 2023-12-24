@@ -1,2 +1,4 @@
 reset_consumption_defaults:
   name: "Reset Consumption Defaults"
+apply_manual_electricity_cost_saving_adjustment:
+  name: "Apply Manual Cost Saving Adjustment"

@@ -20,13 +20,17 @@ Paste the following directly into your HA overview.
 	* [Mushroom Themes](http://homeassistant.local:8123/hacs/repository/456201687)
 	* [Mushroom](http://homeassistant.local:8123/hacs/repository/444350375)
 	* [Hourly Weather Card](http://homeassistant.local:8123/hacs/repository/499270202)
-* [Layout Card](http://homeassistant.local:8123/hacs/repository/156434866)
+    * [Layout Card](http://homeassistant.local:8123/hacs/repository/156434866)
+	* [Power Flow Card Plus](http://homeassistant.local:8123/hacs/repository/618081815)
 
 6. You must have "Solcast PV Solar" and "Solax Modbus" HACS Integrations installed and configured to your own system
 	* [Solcast](https://github.com/oziee/ha-solcast-solar) 
 	* The naming convention used with this integration is important.  By default, sensors should present as, for example: "sensor.solcast_pv_forecast_forecast_tomorrow".  When adding this integration, ensure that this naming convention is preserved.
 	* [Solax Modbus](https://github.com/wills106/homeassistant-solax-modbus)
 	* The naming convention used with this integration is important.  By default, sensors should present as, for example: "sensor.solax_house_load".  When adding this integration, ensure that this naming convention is preserved.
+	* [Vairable] (http://homeassistant.local:8123/hacs/repository/199332790)
+	* [Octopus Energy] (http://homeassistant.local:8123/hacs/repository/401282856)
+	* This integration adds account ID to entities so you will need to adjust
 
 7. Install Openweathermap integration from devices & services > add integration
 
@@ -34,16 +38,163 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
 * https://toolkit.solcast.com.au/register/hobbyist
 * https://home.openweathermap.org/users/sign_up
 
+8. You will need to enable the follwoing senosrs in your solax integration which are not enabled by default. Once enabled it might take a few minutes before they show up with data
+  * solax_bms_charge_max_current
+  * sensor.solax_grid_export_total
+  * sensor.solax_grid_import_total
+  * sensor.solax_battery_input_energy_total
+  * sensor.solax_battery_output_energy_total
+
+9. You will need to change the saving session entity to the one with your account ID in
 
 ## Dashboard (Full) Code
 ```
-background: black
-title: Rowlington Way
 views:
+  - title: Home
+    icon: mdi:solar-power-variant
+    badges: []
+    cards:
+      - type: custom:power-flow-card-plus
+        entities:
+          battery:
+            invert_state: true
+            state_of_charge: sensor.solax_battery_capacity
+            entity: sensor.solax_battery_power_charge
+          grid:
+            entity: sensor.solax_measured_power
+            invert_state: true
+          solar:
+            display_zero_state: true
+            entity: sensor.solax_pv_power_total
+          home: {}
+        clickable_entities: true
+        display_zero_lines:
+          mode: show
+          transparency: 50
+          grey_color:
+            - 189
+            - 189
+            - 189
+        use_new_flow_rate_model: true
+        w_decimals: 0
+        kw_decimals: 1
+        min_flow_rate: 0.75
+        max_flow_rate: 6
+        max_expected_power: 2000
+        min_expected_power: 0.01
+        watt_threshold: 1000
+        transparency_zero_lines: 0
+        title: Home - Power
+      - type: entities
+        entities:
+          - entity: button.solax_remotecontrol_trigger
+          - entity: select.solax_remotecontrol_power_control
+          - entity: number.solax_remotecontrol_active_power
+            name: Active Power
+          - entity: number.solax_remotecontrol_duration
+            name: Duration
+          - entity: number.solax_remotecontrol_autorepeat_duration
+            name: Autorepeat Duration
+          - entity: sensor.solax_remotecontrol_autorepeat_remaining
+            name: Modbus Time Remaining
+          - entity: sensor.solax_modbus_power_control
+            name: Current State
+          - entity: number.solax_remotecontrol_import_limit
+            name: Import Limit
+        title: Modbus Power Control
+      - type: custom:apexcharts-card
+        graph_span: 7d
+        span:
+          end: day
+        stacked: true
+        header:
+          show: true
+          title: Electricity & Solar Savings
+          show_states: true
+          colorize_states: true
+        series:
+          - entity: sensor.today_solar_savings
+            name: Solar
+            type: column
+            group_by:
+              func: max
+              duration: 1d
+            show:
+              in_header: false
+              legend_value: false
+          - entity: sensor.today_electricity_savings_excluding_solar
+            name: Electricity exc Solar
+            type: column
+            group_by:
+              func: max
+              duration: 1d
+            show:
+              in_header: false
+              legend_value: false
+          - entity: sensor.today_electricity_cost_saved
+            name: Total
+            type: line
+            stroke_width: 1
+            show:
+              extremas: false
+              in_header: false
+              legend_value: false
+            group_by:
+              func: max
+              duration: 1d
+        yaxis:
+          - id: first
+            decimals: 2
+            max: 2.5
+            min: 0
+            apex_config:
+              tickAmount: 5
+              logarithmic: false
+      - type: vertical-stack
+        title: Saving Sessions
+        cards:
+          - type: entity
+            entity: binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions
+            name: Saving Session now
+          - type: entity
+            entity: binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions
+            attribute: next_joined_event_start
+            name: Next event start time
+          - type: entity
+            entity: binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions
+            attribute: next_joined_event_duration_in_minutes
+            name: Next event duration
+      - type: vertical-stack
+        cards:
+          - type: entities
+            entities:
+              - entity: sensor.house_load_today_forecast
+              - entity: sensor.solax_battery_current_charge
+              - entity: sensor.solax_today_s_solar_energy
+              - entity: sensor.today_electricity_cost_saved
+              - entity: var.total_solar_battery_cost_saving
+              - entity: sensor.solax_bms_charge_max_current
+              - entity: sensor.solax_battery_temperature
+            title: ' Current Stats'
+          - type: entities
+            entities:
+              - entity: sensor.solax_grid_export_total
+                name: Export total
+              - entity: sensor.solax_grid_import_total
+                name: Import total
+              - entity: sensor.solax_total_solar_energy
+                name: Generation total
+              - entity: sensor.solax_battery_input_energy_total
+                name: Total battery charge
+              - entity: sensor.solax_battery_output_energy_total
+                name: Total battery discharge
+              - entity: sensor.total_house_load
+                secondary_info: none
+            title: Global Stats
   - theme: Mushroom
-    title: Solar New
+    title: Charts
     path: solar_new
-    icon: mdi:white-balance-sunny
+    icon: mdi:chart-line
     type: custom:horizontal-layout
     badges: []
     cards:
@@ -280,8 +431,8 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
-                entity: sensor.solax_today_s_yield
-                name: Yield
+                entity: sensor.solax_today_s_solar_energy
+                name: Solar
                 icon_type: none
                 layout: vertical
               - type: custom:mushroom-entity-card
@@ -373,40 +524,6 @@ views:
         columns: 1
         type: grid
         cards:
-          - square: false
-            type: grid
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: automation.flux_charge
-                name: Flux Charge
-                show_state: true
-                icon_height: 20px
-                icon: mdi:jellyfish
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: input_boolean.flux_discharge
-                icon_height: 20px
-                name: Flux Discharge
-                show_state: true
-                icon: mdi:jellyfish
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                entity: automation.solar_battery_charge_automation
-                show_state: true
-                icon: mdi:battery-charging-40
-                icon_height: 20px
-                name: Auto Charge
-            columns: 3
           - show_name: true
             show_icon: false
             show_state: true
@@ -532,6 +649,16 @@ views:
               - entity: sensor.break_even_export_kwh
                 name: Export to Break Even
             columns: 2
+          - show_name: true
+            show_icon: true
+            show_state: true
+            type: glance
+            entities:
+              - entity: sensor.today_mock_variable_cost
+                name: Today Mock Variable cost
+              - entity: sensor.today_electricity_cost_saved
+                name: Today cost saving
+              - entity: sensor.house_load_today
       - square: false
         type: grid
         cards:
@@ -556,25 +683,11 @@ views:
               noon: true
         columns: 1
   - theme: Backend-selected
-    title: Solis Data
-    path: solis-data
+    title: Config Data
     subview: false
-    icon: mdi:solar-power-variant
+    icon: ''
     badges: []
     cards:
-      - type: entities
-        entities:
-          - entity: sensor.solax_grid_export_total
-            name: Export total
-          - entity: sensor.solax_grid_import_total
-            name: Import total
-          - entity: sensor.solax_total_solar_energy
-            name: Generation total
-          - entity: sensor.solax_battery_input_energy_total
-            name: Total battery charge
-          - entity: sensor.solax_battery_output_energy_total
-            name: Total battery discharge
-        title: Global Stats
       - type: entities
         entities:
           - entity: input_number.octopus_energy_import_standing_charge
@@ -599,6 +712,9 @@ views:
           - entity: sensor.octopus_flux_tariff_peak
           - entity: input_number.octopus_energy_import_peak
             name: Peak Import Rate
+          - entity: sensor.octopus_mock_import_variable_cost
+          - entity: input_number.octopus_mock_import_variable
+            name: Variable Import Rate
         title: Electricity Rate Definitions
       - square: false
         type: grid
@@ -649,6 +765,7 @@ views:
                 entity: input_number.flux_charge_soc
                 layout: vertical
                 icon_type: none
+                display_mode: buttons
               - type: custom:mushroom-number-card
                 entity: input_number.flux_discharge_cutout_soc
                 layout: vertical
@@ -657,6 +774,16 @@ views:
                 entity: input_number.hybrid_battery_charge_power
                 layout: vertical
                 icon_type: none
+              - type: custom:mushroom-number-card
+                layout: vertical
+                icon_type: none
+                entity: input_number.saving_session_discharge_rate
+                display_mode: ''
+              - type: custom:mushroom-number-card
+                entity: input_number.saving_session_desired_battery_soc
+                layout: vertical
+                icon_type: none
+                display_mode: buttons
             columns: 2
           - type: entities
             entities:
@@ -669,4 +796,133 @@ views:
               - entity: sensor.battery_charge_power
                 name: Set Charge Power
         columns: 1
+      - type: entities
+        entities:
+          - entity: var.total_solar_battery_cost_saving
+          - entity: input_number.manual_electricity_cost_saving_adjustment
+            name: Amount
+          - entity: input_button.apply_manual_electricity_cost_saving_adjustment
+            name: Apply
+        title: Manual Cost Saving adjustment
+      - square: false
+        columns: 1
+        type: grid
+        cards:
+          - square: false
+            type: grid
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.flux_charge
+                name: Flux Charge
+                show_state: true
+                icon_height: 20px
+                icon: mdi:jellyfish
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: input_boolean.flux_discharge
+                icon_height: 20px
+                name: Flux Discharge
+                show_state: true
+                icon: mdi:jellyfish
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.solar_battery_charge_automation
+                show_state: true
+                icon: mdi:battery-charging-40
+                icon_height: 20px
+                name: Auto Charge
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                name: 'Check 1AM Boost '
+                show_state: true
+                icon_height: 20px
+                icon: mdi:battery-clock-outline
+                entity: automation.solar_check_1am_charge
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.flux_prevent_battery_discharge
+                icon_height: 20px
+                name: Auto Stop Discharge
+                show_state: true
+                icon: mdi:battery-off-outline
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                show_state: true
+                icon: mdi:battery-minus
+                icon_height: 20px
+                entity: automation.flux_re_enable_battery_discharge
+                name: Auto Restart Discharge
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                name: Cutout Night Charge
+                show_state: true
+                icon_height: 20px
+                icon: mdi:battery-off
+                entity: automation.solar_overnight_charge_cutout
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.update_total_solar_battery_cost_saving
+                icon_height: 20px
+                name: Update cost savings
+                show_state: true
+                icon: mdi:cash
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.solar_saving_session_charge
+                icon_height: 20px
+                name: Saving Session Charge
+                show_state: true
+                icon: mdi:battery-arrow-up-outline
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.solar_saving_session_discharge
+                icon_height: 20px
+                name: Saving Session Discharge
+                show_state: true
+                icon: mdi:battery-arrow-down
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: automation.octopus_energy_join_saving_session
+                icon_height: 20px
+                name: Join Saving Session
+                show_state: true
+                icon: mdi:cash
+            columns: 3
+        title: Automations control
+
+
 ```

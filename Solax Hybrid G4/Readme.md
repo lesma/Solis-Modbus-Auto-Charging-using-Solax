@@ -40,6 +40,10 @@ Here is what the [Full Dashboard](https://github.com/jevburchell/Solis-Modbus-Au
 
 <img src="../Images/Full_Dashboard_Hybrid.png">
 
+<img src="../Images/Full_Dashboard_Hybrid_Page2.png">
+
+<img src="../Images/Full_Dashboard_Hybrid_Page3.png">
+
 # User Guide
 ## UI
 ### Solar Data
@@ -162,6 +166,34 @@ As an example, with my 10kWh battery and a Force Charge SoC set at 10%, the maxi
 * Hourly Weather Card - shows basic pictoral weather over the next 24 hours.
 * Horizon Card - visual representation of the Azimuth & Elevation of the sun in the sky.
 
+-----
+
+### Automations
+* Flux - Charge: Triggers a charge before the peak period
+* Flux - Charge Cutout: Cutouts the charge before the peak when the battery reaches the desired level
+* Flux - Discharge Cutout: Cutouts discharge during the peak period when battery level falls below the flux discharge level
+* Flux - Discharge: Triggers the discharge during the peak period
+* Utility Meter - Set Flux (AM): Sets the flux tariff at 5AM
+* Utility Meter - Set Flux (PM): Sets the flux tariff at 7PM
+* Utility Meter - Set Offpeak: Sets the off peak at 2AM
+* Utility Meter - Set Peak: Sets the peak at 4PM
+* Solar - Battery Charge Automation: Sets the charge times during off peak (note not for G4)
+* Solar - Daily Sync RTC: Syncs the clock
+* Solar - Expected Consumption Low State Tracker: Updates todays consumption if todays load is higher
+* Solar - Expected Consumption Today : Updater: Updates todays consumption
+* Solar - Restore Consumption Defaults: Resets various figures to their defaults. be carefull when running this!!
+* Solar - Update Times: Updated invertor charge and discharge times
+
+The below are only for Solax Hybrid G4
+* Flux - Prevent Battery Discharge: This prevents the battery from discharging when the charge will be needed for the peak period, or their is a saving session comeing up
+* Flux - Re-enable Battery Discharge: Disabled prevention of battery discharge as the battery now has enough power to last the peak period
+* Solar - Battery Charge Automation: This just updates the expected consumption with todays
+* Solar - Apply Manual Cost Saving Adjustment: This adds the manual cost saving to the running total (used for things such as saving session data)
+* Solar - Check 1AM Charge: This checks to see if a boost at 1AM is needed due to low charge rate caused by low temps and uses power control to do this to hopefully warm up the battery
+* Solar - Overnight Charge Cutout: This stops the overnight charge when the estiamted level is reached, this allows the grid to be used for the entire off peak period for house load
+* Solar - Update total solar battery cost saving: This adds todays cost savings to the running total 
+* Solar - Saving Session Discharge: This starts the saving session discharge
+* Solar - Saving Session Charge: This charges the battery to the deisred level before a saving session
 -----
 
 # Charge Logic

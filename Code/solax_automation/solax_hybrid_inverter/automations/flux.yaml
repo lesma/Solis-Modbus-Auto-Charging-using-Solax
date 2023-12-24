@@ -185,3 +185,109 @@
           - select.octopus_flux_tariff
           - select.octopus_flux_export_tariff
   mode: single
+
+- alias: Flux - Prevent Battery Discharge
+  description: >-
+    Monitors battery SoC when in the flux period before peak. Stops discharge of
+    the battery when 1% below threshold  to avoid having to charge up before peak
+    period adding load to the battery and losing energy due to inefficiencies in
+    charging/discharge cycles and better spread of demand to. Will not act if
+    already a remote control running to allow for manual override and its not a
+    saving session day. If it is a saving session day then will only kick in when
+    the power is above the saving session desired state of charge, this assumes
+    that another automation has kicked of a charge and this is responsible for
+    stopping it when it reached the given point.
+  trigger:
+    - platform: time_pattern
+      minutes: /15
+    - platform: numeric_state
+      entity_id: sensor.solax_battery_capacity
+      below: input_number.flux_charge_soc
+  condition:
+    - condition: time
+      after: "05:00:00"
+      before: "16:00:00"
+    - condition: or
+      conditions:
+        - condition: and
+          conditions:
+            - condition: state
+              entity_id: sensor.octopus_energy_saving_session_today
+              state: "True"
+            - condition: numeric_state
+              entity_id: sensor.solax_battery_capacity
+              value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
+              above: input_number.saving_session_desired_battery_soc
+        - condition: and
+          conditions:
+            - condition: numeric_state
+              entity_id: sensor.solax_battery_capacity
+              value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
+              below: input_number.flux_charge_soc
+            - condition: numeric_state
+              entity_id: sensor.solax_remotecontrol_autorepeat_remaining
+              below: 1
+  action:
+    - service: select.select_option
+      data:
+        option: Enabled No Discharge
+      target:
+        entity_id: select.solax_remotecontrol_power_control
+    - service: number.set_value
+      data:
+        value: >-
+          {% set target= (as_timestamp(now().replace(hour=15, minute=59, second
+          =00) ) - as_timestamp(now()))|round(1)|int %} {{ ([28800, target] |
+          sort)[0] }}
+      target:
+        entity_id: number.solax_remotecontrol_autorepeat_duration
+    - service: button.press
+      data: {}
+      target:
+        entity_id: button.solax_remotecontrol_trigger
+  mode: single
+
+- alias: Flux - Re-enable Battery Discharge
+  description: >-
+    Monitors battery SoC when in the flux period before peak. Restarts discharge
+    of the battery when 1% above threshold  this is where the battery level has
+    dropped to a level where it pauses discharge until peak but then energy is
+    input into the battery likley from PV so can restart discharge. Should be -1
+    for 2% change
+  trigger:
+    - platform: time_pattern
+      minutes: /15
+    - platform: numeric_state
+      entity_id: sensor.solax_battery_capacity
+      value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
+      above: input_number.flux_charge_soc
+  condition:
+    - condition: time
+      after: "05:00:00"
+      before: "16:00:00"
+    - condition: numeric_state
+      entity_id: sensor.solax_battery_capacity
+      value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
+      above: input_number.flux_charge_soc
+    - condition: numeric_state
+      entity_id: sensor.solax_remotecontrol_autorepeat_remaining
+      below: 1
+    - condition: state
+      entity_id: sensor.octopus_energy_saving_session_today
+      state: "False"
+  action:
+    - service: select.select_option
+      data:
+        option: Disabled
+      target:
+        entity_id: select.solax_remotecontrol_power_control
+    - service: number.set_value
+      data:
+        value: 30
+      target:
+        entity_id: number.solax_remotecontrol_autorepeat_duration
+    - service: button.press
+      data: {}
+      target:
+        entity_id: button.solax_remotecontrol_trigger
+  mode: single
