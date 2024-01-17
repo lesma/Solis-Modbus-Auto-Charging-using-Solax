@@ -183,18 +183,18 @@
         entity_id: input_number.manual_electricity_cost_saving_adjustment
   mode: single
 
-- alias: Solar - Check 1AM Charge
+- alias: Solar - Check 1:30AM Charge
   description: >-
-    When the battery charge rate is low trigger a charge of 1KW, when not then
+    When the battery temp (and hence charge rate) is low trigger a charge of 2KW, when not then
     enable self use mode. When adjusting timeing be sure to do in all four places
   trigger:
     - platform: time
-      at: "01:01:00"
+      at: "01:30:00"
   condition: []
   action:
     - if:
         - condition: template
-          value_template: "{{ ((states('sensor.solax_bms_charge_max_current')| float) > 8) }}"
+          value_template: "{{ ((states('sensor.solax_battery_temp_low')| float) < 8.0) }}"
       then:
         - service: select.select_option
           data:
@@ -206,7 +206,7 @@
             value: >-
               {% set target= (as_timestamp(now().replace(hour=1, minute=57, second
               =0) ) - as_timestamp(now()))|round(1)|int %} {{ ([28800, target] |
-              sort)[0] }} # Time place 2/4
+              sort)[0] }}
           target:
             entity_id: number.solax_remotecontrol_autorepeat_duration
         - service: button.press
@@ -221,7 +221,7 @@
             entity_id: select.solax_remotecontrol_power_control
         - service: number.set_value
           data:
-            value: "1000"
+            value: "2000"
           target:
             entity_id: number.solax_remotecontrol_active_power
         - service: number.set_value
@@ -229,7 +229,7 @@
             value: >-
               {% set target= (as_timestamp(now().replace(hour=1, minute=57, second
               =0) ) - as_timestamp(now()))|round(1)|int %} {{ ([28800, target] |
-              sort)[0] }} # Time place 3/4
+              sort)[0] }}
           target:
             entity_id: number.solax_remotecontrol_autorepeat_duration
         - service: button.press
@@ -238,7 +238,7 @@
             entity_id: button.solax_remotecontrol_trigger
     - delay:
         hours: 0
-        minutes: 57
+        minutes: 27
         seconds: 0
         milliseconds: 0
     - service: select.select_option
@@ -256,6 +256,7 @@
       target:
         entity_id: button.solax_remotecontrol_trigger
   mode: single
+
   
 - alias: Solar - Overnight Charge Cutout
   description: >-
@@ -315,7 +316,7 @@
   trigger:
     - platform: state
       entity_id:
-        - binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions
+        - binary_sensor.octopus_energy_a_f2828b0c_octoplus_saving_sessions
       to: "on"
   condition: []
   action:
@@ -326,13 +327,14 @@
         entity_id: select.solax_remotecontrol_power_control
     - service: number.set_value
       data:
-        value: {{ states('input_number.saving_session_discharge_rate') | float() * -1  }}
+        value: >-
+          {{ states('input_number.saving_session_discharge_rate') | float() * -1 
+          }}
       target:
         entity_id: number.solax_remotecontrol_active_power
     - service: number.set_value
       data:
-        value:
-          "[object Object]": null
+        value: "{{ states('sensor.octopus_energy_saving_session_duration_seconds') }}"
       target:
         entity_id: number.solax_remotecontrol_autorepeat_duration
     - service: button.press
@@ -341,15 +343,16 @@
         entity_id: button.solax_remotecontrol_trigger
   mode: single
 
+
 - alias: Solar - Saving Session Charge
   description: >-
-    When a savign session is today, and it was not planned before the current day
+    When a saving session is today, and it was not planned before the current day
     charge until it reaches it set point
   trigger:
     - platform: state
       entity_id:
         - sensor.octopus_energy_saving_session_today
-      to: "True"
+      to: "true"
   condition:
     - condition: time
       after: "05:00:00"
@@ -361,15 +364,16 @@
         entity_id: select.solax_remotecontrol_power_control
     - service: number.set_value
       data:
-        value:
-          "[object Object]": null
+        value: "{{states('input_number.hybrid_battery_charge_power')}}"
       target:
         entity_id: number.solax_remotecontrol_active_power
     - service: number.set_value
       data:
         value: >-
-          {% set secondsToStart= states('sensor.octopus_energy_saving_session_start_datetime') | as_timestamp() - as_timestamp(now()) |round(1)|int %} 
-          {{ ([28800, secondsToStart] | sort)[0] }}
+          {% set secondsToStart=
+          states('sensor.octopus_energy_saving_session_start_datetime') |
+          as_timestamp() - as_timestamp(now()) |round(1)|int %}  {{ ([28800,
+          secondsToStart] | sort)[0] }}
       target:
         entity_id: number.solax_remotecontrol_autorepeat_duration
     - service: button.press
@@ -377,3 +381,4 @@
       target:
         entity_id: button.solax_remotecontrol_trigger
   mode: single
+

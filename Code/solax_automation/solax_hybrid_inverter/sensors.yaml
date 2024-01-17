@@ -301,7 +301,11 @@
 - sensor:
     - name: "Octopus Energy Saving Session Start Datetime"
       unique_id: "octopus_energy_saving_session_start_datetime"
-      state: "{{ strptime(states('binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions.attributes.next_joined_event_start'), '%d %B %Y at %H:%M:%S', as_datetime('3000-01-01')) }}"
+      state: "{{ state_attr('binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions','next_joined_event_start') }}"
+- sensor:
+    - name: "Octopus Energy Saving Session duration seconds"
+      unique_id: "octopus_energy_saving_session_duration_seconds"
+      state: "{{state_attr('binary_sensor.octopus_energy_a_REPLACE_octoplus_saving_sessions','current_joined_event_duration_in_minutes') | float(0) * 60}}"
 - sensor:
     - name: "Octopus Energy Saving Session Today"
       unique_id: "octopus_energy_saving_session_today"

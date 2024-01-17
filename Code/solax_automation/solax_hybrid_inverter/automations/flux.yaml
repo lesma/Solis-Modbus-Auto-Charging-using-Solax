@@ -196,7 +196,9 @@
     saving session day. If it is a saving session day then will only kick in when
     the power is above the saving session desired state of charge, this assumes
     that another automation has kicked of a charge and this is responsible for
-    stopping it when it reached the given point.
+    stopping it when it reached the given point. The charge/discharge during
+    saving sessions will only kick in when the actvie power is above 0 (so
+    charging) in order to prevent it stopping the discharge
   trigger:
     - platform: time_pattern
       minutes: /15
@@ -204,13 +206,13 @@
       entity_id: sensor.solax_battery_capacity
       below: input_number.flux_charge_soc
   condition:
-    - condition: time
-      after: "05:00:00"
-      before: "16:00:00"
     - condition: or
       conditions:
         - condition: and
           conditions:
+            - condition: time
+              after: "05:00:00"
+              before: "16:59:00"
             - condition: state
               entity_id: sensor.octopus_energy_saving_session_today
               state: "True"
@@ -218,8 +220,14 @@
               entity_id: sensor.solax_battery_capacity
               value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
               above: input_number.saving_session_desired_battery_soc
+            - condition: numeric_state
+              entity_id: number.solax_remotecontrol_active_power
+              above: 0
         - condition: and
           conditions:
+            - condition: time
+              after: "05:00:00"
+              before: "16:00:00"
             - condition: numeric_state
               entity_id: sensor.solax_battery_capacity
               value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
@@ -246,6 +254,7 @@
       target:
         entity_id: button.solax_remotecontrol_trigger
   mode: single
+
 
 - alias: Flux - Re-enable Battery Discharge
   description: >-

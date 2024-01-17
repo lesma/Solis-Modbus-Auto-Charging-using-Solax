@@ -44,6 +44,7 @@ Note: Solcast and Openweathermap require you to set up and use your own API Keys
   * sensor.solax_grid_import_total
   * sensor.solax_battery_input_energy_total
   * sensor.solax_battery_output_energy_total
+  * sensor.solax_battery_temp_low
 
 9. You will need to change the saving session entity to the one with your account ID in
 
