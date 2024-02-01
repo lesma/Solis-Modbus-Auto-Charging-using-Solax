@@ -189,7 +189,7 @@ The below are only for Solax Hybrid G4
 * Flux - Re-enable Battery Discharge: Disabled prevention of battery discharge as the battery now has enough power to last the peak period
 * Solar - Battery Charge Automation: This just updates the expected consumption with todays
 * Solar - Apply Manual Cost Saving Adjustment: This adds the manual cost saving to the running total (used for things such as saving session data)
-* Solar - Check 1AM Charge: This checks to see if a boost at 1AM is needed due to low charge rate caused by low temps and uses power control to do this to hopefully warm up the battery
+* Solar - Check 1:30AM Charge: This checks to see if a boost at 1AM is needed due to low charge rate caused by low temps and uses power control to do this to hopefully warm up the battery
 * Solar - Overnight Charge Cutout: This stops the overnight charge when the estiamted level is reached, this allows the grid to be used for the entire off peak period for house load
 * Solar - Update total solar battery cost saving: This adds todays cost savings to the running total 
 * Solar - Saving Session Discharge: This starts the saving session discharge

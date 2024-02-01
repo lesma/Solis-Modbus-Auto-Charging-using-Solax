@@ -289,7 +289,7 @@
       unique_id: "today_solar_savings"
       unit_of_measurement: "£"
       device_class: monetary
-      state: "{{(( states('sensor.solax_today_s_solar_energy')| float(0) * states('input_number.octopus_mock_import_variable')| float(0))) | round(2) }}"
+      state: "{{(( states('sensor.solax_today_s_solar_energy')| float(0) * states('input_number.octopus_mock_import_variable') | float(0) * 0.9)) | round(2) }}"
 - sensor:
     - name: "Today Electricity Savings Excluding Solar"
       unique_id: "today_electricity_savings_excluding_solar"
