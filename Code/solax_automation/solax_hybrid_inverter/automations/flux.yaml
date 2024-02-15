@@ -278,9 +278,6 @@
       entity_id: sensor.solax_battery_capacity
       value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
       above: input_number.flux_charge_soc
-    - condition: state
-      entity_id: sensor.octopus_energy_saving_session_today
-      state: "False"
     - condition: template
       value_template: >-
         {% if is_state('sensor.octopus_energy_saving_session_today', "False")  %}
