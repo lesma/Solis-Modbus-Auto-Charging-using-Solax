@@ -226,12 +226,26 @@
         - condition: and
           conditions:
             - condition: time
-              after: "05:00:00"
+              after: "10:00:00"
               before: "16:00:00"
             - condition: numeric_state
               entity_id: sensor.solax_battery_capacity
               value_template: "{{states('sensor.solax_battery_capacity')| float(0) }}"
               below: input_number.flux_charge_soc
+            - condition: numeric_state
+              entity_id: sensor.solax_remotecontrol_autorepeat_remaining
+              below: 1
+        - condition: and
+          conditions:
+            - condition: time
+              after: "08:00:00"
+              before: "10:00:00"
+            - condition: numeric_state
+              entity_id: sensor.solcast_pv_forecast_forecast_remaining_today
+              value_template: >-
+                {{states('sensor.solcast_pv_forecast_forecast_remaining_today')|
+                float(0) }}
+              below: 9
             - condition: numeric_state
               entity_id: sensor.solax_remotecontrol_autorepeat_remaining
               below: 1
