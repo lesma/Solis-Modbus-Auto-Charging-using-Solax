@@ -58,6 +58,9 @@
       entity_id: sensor.solax_battery_capacity
       below: input_number.flux_discharge_cutout_soc
   condition:
+    - condition: state
+      entity_id: sensor.octopus_energy_saving_session_today
+      state: "False"
     - condition: time
       after: "16:00:00"
       before: "19:00:00"
@@ -92,6 +95,9 @@
     - platform: time
       at: "16:01:00"
   condition:
+    - condition: state
+      entity_id: sensor.octopus_energy_saving_session_today
+      state: "False"
     - condition: state
       entity_id: input_boolean.flux_discharge
       state: "on"
