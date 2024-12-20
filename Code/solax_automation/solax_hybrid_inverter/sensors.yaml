@@ -309,4 +309,9 @@
 - sensor:
     - name: "Octopus Energy Saving Session Today"
       unique_id: "octopus_energy_saving_session_today"
-      state: "{{ states('sensor.octopus_energy_saving_session_start_datetime') | as_timestamp - as_timestamp(now()) < 86400 }}"
+      state: >
+        {% if is_state("sensor.octopus_energy_saving_session_start_datetime", date) %}
+          {{ (as_timestamp(states('sensor.octopus_energy_saving_session_start_datetime')) - as_timestamp(now())) < 86400 }}
+        {% else %}
+          {{ state_attr('calendar.saving_sessions', 'start_time')[:10] == now().strftime('%Y-%m-%d') }}
+        {% endif %}

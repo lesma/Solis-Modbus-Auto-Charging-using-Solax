@@ -318,6 +318,10 @@
       entity_id:
         - binary_sensor.octopus_energy_a_f2828b0c_octoplus_saving_sessions
       to: "on"
+    - trigger: calendar
+    entity_id: calendar.saving_sessions
+    event: start
+    offset: "0:0:0"
   condition: []
   action:
     - service: select.select_option
@@ -334,7 +338,14 @@
         entity_id: number.solax_remotecontrol_active_power
     - service: number.set_value
       data:
-        value: "{{ states('sensor.octopus_energy_saving_session_duration_seconds') }}"
+        value: >
+          {% set start_time = state_attr('calendar.saving_sessions', 'start_time')
+          %} {% set end_time = state_attr('calendar.saving_sessions', 'end_time')
+          %} {% if start_time and end_time %}
+            {{ (as_timestamp(end_time) - as_timestamp(start_time)) }}
+          {% else %}
+            {{ states('sensor.octopus_energy_saving_session_duration_seconds') }}
+          {% endif %}
       target:
         entity_id: number.solax_remotecontrol_autorepeat_duration
     - service: button.press
